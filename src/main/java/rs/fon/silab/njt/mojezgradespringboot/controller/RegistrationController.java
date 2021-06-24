@@ -35,12 +35,19 @@ public class RegistrationController {
         return userObj;
     }
     
-    public void loginUser(@RequestBody User user){
+    @PostMapping("/login")
+    public User loginUser(@RequestBody User user) throws Exception{
         String tempEmail = user.getEmail();
         String tempPassword = user.getPassword();
+        User userObj = null;
         
         if(tempEmail!=null && tempPassword!=null){
+            userObj = service.fetchUserByEmailAndPassword(tempEmail, tempPassword);
             
         }
+        if(userObj == null){
+            throw new Exception("Neuspesan login. Proverite email i/ili lozinku.");
+        }
+        return userObj;
     }
 }
