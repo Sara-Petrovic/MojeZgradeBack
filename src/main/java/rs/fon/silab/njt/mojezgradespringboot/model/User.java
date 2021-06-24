@@ -2,17 +2,15 @@ package rs.fon.silab.njt.mojezgradespringboot.model;
 
 import java.io.Serializable;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
-/**
- *
- * @author Sara
- */
 
 @Entity
 public class User implements Serializable{
     
     @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
     private Long userId;
     private String email;
     private String password;
@@ -68,9 +66,5 @@ public class User implements Serializable{
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
-    }
-    
-    
-    
-    
+    } 
 }

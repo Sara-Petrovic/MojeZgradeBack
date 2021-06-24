@@ -6,11 +6,6 @@ import org.springframework.transaction.annotation.Transactional;
 import rs.fon.silab.njt.mojezgradespringboot.model.User;
 import rs.fon.silab.njt.mojezgradespringboot.repository.UserRepository;
 
-/**
- *
- * @author Sara
- */
-
 @Service
 @Transactional
 public class RegistrationService {
@@ -18,7 +13,7 @@ public class RegistrationService {
     private UserRepository repo;
     
     public User saveUser(User user){
-        return repo.save(user); //cuva u bazu
+        return repo.save(user);
     }
     
     public User fetchUserByEmail(String email){
