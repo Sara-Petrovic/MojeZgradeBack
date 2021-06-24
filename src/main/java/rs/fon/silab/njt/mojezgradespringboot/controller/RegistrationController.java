@@ -1,6 +1,7 @@
 package rs.fon.silab.njt.mojezgradespringboot.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,6 +23,7 @@ public class RegistrationController {
     private RegistrationService service;
     
     @PostMapping("/registeruser")
+    @CrossOrigin(origins = "http://localhost:4200")
     public User registerUser(@RequestBody User user) throws Exception{
         String tempEmail = user.getEmail();
         if(tempEmail!=null && !tempEmail.isEmpty()){
@@ -36,6 +38,7 @@ public class RegistrationController {
     }
     
     @PostMapping("/login")
+    @CrossOrigin(origins = "http://localhost:4200")
     public User loginUser(@RequestBody User user) throws Exception{
         String tempEmail = user.getEmail();
         String tempPassword = user.getPassword();
