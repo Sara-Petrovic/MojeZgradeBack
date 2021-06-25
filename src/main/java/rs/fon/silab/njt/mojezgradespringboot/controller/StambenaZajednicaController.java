@@ -2,9 +2,12 @@ package rs.fon.silab.njt.mojezgradespringboot.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import rs.fon.silab.njt.mojezgradespringboot.model.StambenaZajednica;
 import rs.fon.silab.njt.mojezgradespringboot.service.StambenaZajednicaService;
@@ -21,15 +24,29 @@ public class StambenaZajednicaController {
         validateData(sz);
         return service.save(sz);
     }
+    
+    @GetMapping("/stambenazajednica")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public StambenaZajednica findStambenaZajednica(@RequestParam Long id) throws Exception {
+        return service.find(id);
+    }
 
     @PutMapping("/stambenazajednica")
     @CrossOrigin(origins = "http://localhost:4200")
     public StambenaZajednica editStambenaZajednica(@RequestBody StambenaZajednica sz) throws Exception {
-        if (service.find(sz) == null) {
+        if (service.find(sz.getStambenaZajednicaId()) == null) {
             throw new Exception("Stambena zajednica ne postoji u bazi.");
         }
         validateData(sz);
         return service.save(sz);
+    }
+    
+    @DeleteMapping("/stambenazajednica")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public StambenaZajednica deleteStambenaZajednica(@RequestParam Long id) throws Exception {
+        StambenaZajednica sz = findStambenaZajednica(id); 
+        service.delete(sz);
+        return sz;
     }
 
     private void validateData(StambenaZajednica sz) throws Exception {

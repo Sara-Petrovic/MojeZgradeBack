@@ -18,12 +18,16 @@ public class StambenaZajednicaService {
         return repo.save(sz);
     }
 
-    public StambenaZajednica find(StambenaZajednica sz) {
-        Optional<StambenaZajednica> optionalResponse = repo.findById(sz.getStambenaZajednicaId());
+    public StambenaZajednica find(Long szId) {
+        Optional<StambenaZajednica> optionalResponse = repo.findById(szId);
         if (optionalResponse.isPresent()) {
             return optionalResponse.get();
         }
         return null;
+    }
+
+    public void delete(StambenaZajednica sz) {
+        repo.delete(sz);
     }
 
 }
