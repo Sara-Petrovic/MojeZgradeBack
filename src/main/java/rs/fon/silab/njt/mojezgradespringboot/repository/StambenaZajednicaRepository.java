@@ -5,5 +5,5 @@ import rs.fon.silab.njt.mojezgradespringboot.model.StambenaZajednica;
 
 
 public interface StambenaZajednicaRepository extends JpaRepository<StambenaZajednica, Long>{
-    
+    public StambenaZajednica findByStambenaZajednicaId(Long id);
 }
