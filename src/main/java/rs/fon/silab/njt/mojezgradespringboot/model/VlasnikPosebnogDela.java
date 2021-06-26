@@ -15,6 +15,7 @@ public class VlasnikPosebnogDela implements Serializable{
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long vlasnikId;
+
     private String ime;
     private String prezime;
     private String brojPosebnogDela;
