@@ -2,10 +2,10 @@ package rs.fon.silab.njt.mojezgradespringboot.model;
 
 import java.io.Serializable;
 import javax.persistence.Entity;
+
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -14,12 +14,14 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-@Entity
-public class VlasnikPosebnogDela implements Serializable{
-    @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    private Long vlasnikId;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 
+@Entity
+public class VlasnikPosebnogDela implements Serializable {
+    @Id
+    @GeneratedValue
+    private Long vlasnikId;
     @NotNull
     @Size(min=3, message="Ime mora imati najmanje 3 karaktera.")
     private String ime;
@@ -40,14 +42,16 @@ public class VlasnikPosebnogDela implements Serializable{
     
     @ManyToOne
     @JoinColumn(name = "stambenaZajednicaId")
+
     @NotNull
     private StambenaZajednica stambenaZajednica;
 
     public VlasnikPosebnogDela() {
     }
 
-    public VlasnikPosebnogDela(Long vlasnikId, String ime, String prezime, 
-            String brojPosebnogDela, double velicinaPosebnogDela, 
+
+    public VlasnikPosebnogDela(Long vlasnikId, String ime, String prezime,
+            String brojPosebnogDela, double velicinaPosebnogDela,
             String kontaktVlasnika, StambenaZajednica stambenaZajednica) {
         this.vlasnikId = vlasnikId;
         this.ime = ime;
@@ -128,6 +132,4 @@ public class VlasnikPosebnogDela implements Serializable{
     public String toString() {
         return ime + " " + prezime;
     }
-
-
 }

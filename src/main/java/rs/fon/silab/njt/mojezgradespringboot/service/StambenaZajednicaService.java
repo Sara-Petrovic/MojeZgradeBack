@@ -1,5 +1,6 @@
 package rs.fon.silab.njt.mojezgradespringboot.service;
 
+import java.util.Optional;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,13 +11,26 @@ import rs.fon.silab.njt.mojezgradespringboot.repository.StambenaZajednicaReposit
 @Service
 @Transactional
 public class StambenaZajednicaService {
-    
+
     @Autowired
     private StambenaZajednicaRepository repo;
 
     public StambenaZajednica save(StambenaZajednica sz) {
         return repo.save(sz);
     }
+
+    public StambenaZajednica find(Long id) {
+        Optional<StambenaZajednica> optionalResponse = repo.findById(id);
+        if (optionalResponse.isPresent()) {
+            return optionalResponse.get();
+        }
+        return null;
+    }
+
+    public void delete(StambenaZajednica sz) {
+        repo.delete(sz);
+    }
+
     public List<StambenaZajednica> getAll() {
         return repo.findAll();
     }

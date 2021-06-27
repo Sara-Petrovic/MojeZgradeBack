@@ -87,6 +87,9 @@ public class StambenaZajednica implements Serializable {
     }
 
     public void setPib(String pib) {
+        if(pib.length() != 9){
+            throw new RuntimeException("PIB mora da ima 9 cifara.");
+        }
         this.pib = pib;
     }
 
@@ -95,6 +98,9 @@ public class StambenaZajednica implements Serializable {
     }
 
     public void setMaticniBroj(String maticniBroj) {
+        if(maticniBroj.length() != 8){
+            throw new RuntimeException("Maticni broj mora da ima 8 cifara.");
+        }
         this.maticniBroj = maticniBroj;
     }
 
@@ -103,6 +109,9 @@ public class StambenaZajednica implements Serializable {
     }
 
     public void setTekuciRacun(String tekuciRacun) {
+        if(tekuciRacun.length() != 18){
+            throw new RuntimeException("Broj racuna mora da ima 18 cifara.");
+        }
         this.tekuciRacun = tekuciRacun;
     }
 
@@ -111,6 +120,9 @@ public class StambenaZajednica implements Serializable {
     }
 
     public void setStambenaZajednicaId(Long stambenaZajednicaId) {
+        if(stambenaZajednicaId < 0){
+            throw new RuntimeException("Id stambene zajednice ne sme da bude manji od 0.");
+        }
         this.stambenaZajednicaId = stambenaZajednicaId;
     }
 
