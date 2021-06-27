@@ -1,8 +1,10 @@
 package rs.fon.silab.njt.mojezgradespringboot.controller;
 
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +25,11 @@ public class StambenaZajednicaController {
     public StambenaZajednica saveStambenaZajednica(@RequestBody StambenaZajednica sz) throws Exception {
         validateData(sz);
         return service.save(sz);
+    }
+    @GetMapping("/stambenazajednica")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public List<StambenaZajednica> getAllStambenaZajednica(){
+        return service.getAll();
     }
     
     @GetMapping("/stambenazajednica")
