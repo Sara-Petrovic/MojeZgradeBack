@@ -4,10 +4,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,31 +31,31 @@ public class StambenaZajednicaController {
     public List<StambenaZajednica> getAllStambenaZajednica(){
         return service.getAll();
     }
-//    
-//    @GetMapping("/stambenazajednica")
-//    @CrossOrigin(origins = "http://localhost:4200")
-//    public StambenaZajednica findStambenaZajednica(@RequestParam Long id) throws Exception {
-//        //implementiraj pretragu po drugim kriterijumima
-//        return service.find(id);
-//    }
-
-    @PutMapping("/stambenazajednica")
+    
+    @GetMapping("/stambenazajednica/{id}")
     @CrossOrigin(origins = "http://localhost:4200")
-    public StambenaZajednica editStambenaZajednica(@RequestBody StambenaZajednica sz) throws Exception {
-        if (service.find(sz.getStambenaZajednicaId()) == null) {
+    public StambenaZajednica findStambenaZajednica(@PathVariable(value = "id") Long id) throws Exception {
+        return service.find(id);
+    }
+
+    @PutMapping("/stambenazajednica/{id}")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public StambenaZajednica editStambenaZajednica(@PathVariable(value = "id") Long id, @RequestBody StambenaZajednica sz) throws Exception {
+        if (service.find(id) == null) {
             throw new Exception("Stambena zajednica ne postoji u bazi.");
         }
         validateData(sz);
+        sz.setStambenaZajednicaId(id);
         return service.save(sz);
     }
     
-//    @DeleteMapping("/stambenazajednica")
-//    @CrossOrigin(origins = "http://localhost:4200")
-//    public StambenaZajednica deleteStambenaZajednica(@RequestParam Long id) throws Exception {
-//        StambenaZajednica sz = findStambenaZajednica(id); 
-//        service.delete(sz);
-//        return sz;
-//    }
+    @DeleteMapping("/stambenazajednica/{id}")
+    @CrossOrigin(origins = "http://localhost:4200")
+    public StambenaZajednica deleteStambenaZajednica(@PathVariable(value = "id") Long id) throws Exception {
+        StambenaZajednica sz = findStambenaZajednica(id); 
+        service.delete(sz);
+        return sz;
+    }
 
     private void validateData(StambenaZajednica sz) throws Exception {
         if(sz.getPib().length() != 9){
