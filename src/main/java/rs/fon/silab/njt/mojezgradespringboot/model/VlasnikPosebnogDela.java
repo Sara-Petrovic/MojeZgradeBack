@@ -2,13 +2,6 @@ package rs.fon.silab.njt.mojezgradespringboot.model;
 
 import java.io.Serializable;
 import javax.persistence.Entity;
-
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
@@ -21,17 +14,12 @@ public class VlasnikPosebnogDela implements Serializable {
     private String prezime;
     private String brojPosebnogDela;
     private double velicinaPosebnogDela;
-    @Enumerated(EnumType.STRING)
     private JedinicaMere mernaJedinica;
     private String kontaktVlasnika;
-    @ManyToOne
-    @JoinColumn(name = "stambenaZajednicaId")
-
     private StambenaZajednica stambenaZajednica;
 
     public VlasnikPosebnogDela() {
     }
-
 
     public VlasnikPosebnogDela(Long vlasnikId, String ime, String prezime,
             String brojPosebnogDela, double velicinaPosebnogDela,
@@ -115,4 +103,5 @@ public class VlasnikPosebnogDela implements Serializable {
     public String toString() {
         return ime + " " + prezime;
     }
+
 }
