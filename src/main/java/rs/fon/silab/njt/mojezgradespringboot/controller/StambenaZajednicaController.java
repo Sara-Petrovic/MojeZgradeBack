@@ -28,6 +28,7 @@ public class StambenaZajednicaController {
     @GetMapping("/stambenazajednica")
     @CrossOrigin(origins = "http://localhost:4200")
     public StambenaZajednica findStambenaZajednica(@RequestParam Long id) throws Exception {
+        //implementiraj pretragu po drugim kriterijumima
         return service.find(id);
     }
 
