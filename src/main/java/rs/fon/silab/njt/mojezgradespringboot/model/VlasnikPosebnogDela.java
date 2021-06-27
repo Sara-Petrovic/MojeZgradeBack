@@ -2,20 +2,22 @@ package rs.fon.silab.njt.mojezgradespringboot.model;
 
 import java.io.Serializable;
 import javax.persistence.Entity;
+
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-@Entity
-public class VlasnikPosebnogDela implements Serializable{
-    @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    private Long vlasnikId;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 
+@Entity
+public class VlasnikPosebnogDela implements Serializable {
+    @Id
+    @GeneratedValue
+    private Long vlasnikId;
     private String ime;
     private String prezime;
     private String brojPosebnogDela;
@@ -25,13 +27,15 @@ public class VlasnikPosebnogDela implements Serializable{
     private String kontaktVlasnika;
     @ManyToOne
     @JoinColumn(name = "stambenaZajednicaId")
+
     private StambenaZajednica stambenaZajednica;
 
     public VlasnikPosebnogDela() {
     }
 
-    public VlasnikPosebnogDela(Long vlasnikId, String ime, String prezime, 
-            String brojPosebnogDela, double velicinaPosebnogDela, 
+
+    public VlasnikPosebnogDela(Long vlasnikId, String ime, String prezime,
+            String brojPosebnogDela, double velicinaPosebnogDela,
             String kontaktVlasnika, StambenaZajednica stambenaZajednica) {
         this.vlasnikId = vlasnikId;
         this.ime = ime;
@@ -112,6 +116,4 @@ public class VlasnikPosebnogDela implements Serializable{
     public String toString() {
         return ime + " " + prezime;
     }
-
-
 }

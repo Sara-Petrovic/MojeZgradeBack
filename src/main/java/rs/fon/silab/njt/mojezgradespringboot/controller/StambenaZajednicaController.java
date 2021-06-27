@@ -31,12 +31,13 @@ public class StambenaZajednicaController {
     public List<StambenaZajednica> getAllStambenaZajednica(){
         return service.getAll();
     }
-    
-    @GetMapping("/stambenazajednica")
-    @CrossOrigin(origins = "http://localhost:4200")
-    public StambenaZajednica findStambenaZajednica(@RequestParam Long id) throws Exception {
-        return service.find(id);
-    }
+//    
+//    @GetMapping("/stambenazajednica")
+//    @CrossOrigin(origins = "http://localhost:4200")
+//    public StambenaZajednica findStambenaZajednica(@RequestParam Long id) throws Exception {
+//        //implementiraj pretragu po drugim kriterijumima
+//        return service.find(id);
+//    }
 
     @PutMapping("/stambenazajednica")
     @CrossOrigin(origins = "http://localhost:4200")
@@ -48,13 +49,13 @@ public class StambenaZajednicaController {
         return service.save(sz);
     }
     
-    @DeleteMapping("/stambenazajednica")
-    @CrossOrigin(origins = "http://localhost:4200")
-    public StambenaZajednica deleteStambenaZajednica(@RequestParam Long id) throws Exception {
-        StambenaZajednica sz = findStambenaZajednica(id); 
-        service.delete(sz);
-        return sz;
-    }
+//    @DeleteMapping("/stambenazajednica")
+//    @CrossOrigin(origins = "http://localhost:4200")
+//    public StambenaZajednica deleteStambenaZajednica(@RequestParam Long id) throws Exception {
+//        StambenaZajednica sz = findStambenaZajednica(id); 
+//        service.delete(sz);
+//        return sz;
+//    }
 
     private void validateData(StambenaZajednica sz) throws Exception {
         if(sz.getPib().length() != 9){

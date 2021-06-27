@@ -19,8 +19,8 @@ public class StambenaZajednicaService {
         return repo.save(sz);
     }
 
-    public StambenaZajednica find(Long szId) {
-        Optional<StambenaZajednica> optionalResponse = repo.findById(szId);
+    public StambenaZajednica find(Long id) {
+        Optional<StambenaZajednica> optionalResponse = repo.findById(id);
         if (optionalResponse.isPresent()) {
             return optionalResponse.get();
         }
