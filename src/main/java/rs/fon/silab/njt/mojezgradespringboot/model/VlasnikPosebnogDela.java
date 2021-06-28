@@ -42,7 +42,6 @@ public class VlasnikPosebnogDela implements Serializable {
     
     @ManyToOne
     @JoinColumn(name = "stambenaZajednicaId")
-
     @NotNull
     private StambenaZajednica stambenaZajednica;
 
