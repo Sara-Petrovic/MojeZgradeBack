@@ -19,7 +19,7 @@ import rs.fon.silab.njt.mojezgradespringboot.model.VlasnikPosebnogDela;
 import rs.fon.silab.njt.mojezgradespringboot.service.VlasnikPosebnogDelaService;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "*")
 public class VlasnikPosebnogDelaController {
 
     @Autowired
@@ -41,6 +41,14 @@ public class VlasnikPosebnogDelaController {
         VlasnikPosebnogDela v = service.findById(vlasnikId)
                 .orElseThrow(() -> new ResourceNotFoundException("Ne postoji vlasnik sa ovim id-jem :: " + vlasnikId));
         return ResponseEntity.ok().body(v);
+    }
+    @GetMapping("/findvlasnikbyprezime/{prezime}")
+    public List<VlasnikPosebnogDela> getVlasnikPosebnogDelaByPrezime(@PathVariable(value = "prezime") String prezimeVlasnika)
+            throws ResourceNotFoundException {
+        List<VlasnikPosebnogDela> vlasnici = service.findByPrezime(prezimeVlasnika);
+        //        .orElseThrow(() -> new ResourceNotFoundException("Ne postoji vlasnik sa ovim imenom i prezimenom :: " + imePrezimeVlasnika));
+        //return ResponseEntity.ok().body(vlasnici);
+        return vlasnici;
     }
 
     @PutMapping("/vlasnikposebnogdela/{id}")

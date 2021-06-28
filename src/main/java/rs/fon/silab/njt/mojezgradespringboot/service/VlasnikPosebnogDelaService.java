@@ -33,4 +33,8 @@ public class VlasnikPosebnogDelaService {
         return repo.findAll();
     }
 
+    public List<VlasnikPosebnogDela> findByPrezime(String prezimeVlasnika) {
+        return repo.findByPrezimeContaining(prezimeVlasnika);
+    }
+
 }
