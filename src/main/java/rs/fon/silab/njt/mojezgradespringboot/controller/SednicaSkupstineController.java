@@ -39,4 +39,8 @@ public class SednicaSkupstineController {
                 .orElseThrow(() -> new ResourceNotFoundException("Ne postoji sednica skupstine sa ovim id-jem :: " + sednicaId));
         return ResponseEntity.ok().body(s);
     }
+    @GetMapping("/findsednicabyulica/{ulica}")
+    public List<SednicaSkupstine> getSednicaSkupstineByUlica(@PathVariable(value = "ulica") String ulica) {
+       return service.findByUlica(ulica);
+    }
 }

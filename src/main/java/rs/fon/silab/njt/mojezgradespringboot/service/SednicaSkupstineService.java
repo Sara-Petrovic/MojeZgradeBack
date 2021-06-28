@@ -33,4 +33,8 @@ public class SednicaSkupstineService {
         return repo.findById(sednicaId);
     }
 
+    public List<SednicaSkupstine> findByUlica(String ulica) {
+        return repo.findByStambenaZajednicaUlica(ulica);
+    }
+
 }
