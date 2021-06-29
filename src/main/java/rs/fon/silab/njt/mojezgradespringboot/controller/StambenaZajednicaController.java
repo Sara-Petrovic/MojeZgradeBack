@@ -18,13 +18,13 @@ import rs.fon.silab.njt.mojezgradespringboot.model.StambenaZajednica;
 import rs.fon.silab.njt.mojezgradespringboot.service.StambenaZajednicaService;
 
 @RestController
+@CrossOrigin(origins = "*")
 public class StambenaZajednicaController {
 
     @Autowired
     private StambenaZajednicaService service;
 
     @PostMapping("/stambenazajednica")
-    @CrossOrigin(origins = "http://localhost:4200")
     public StambenaZajednica saveStambenaZajednica(@RequestBody StambenaZajednica sz) throws Exception {
         try {
             validateData(sz);
@@ -35,7 +35,6 @@ public class StambenaZajednicaController {
     }
 
     @GetMapping("/stambenazajednica")
-    @CrossOrigin(origins = "http://localhost:4200")
     public List<StambenaZajednica> getAllStambenaZajednica() {
         return service.getAll();
     }
@@ -51,7 +50,6 @@ public class StambenaZajednicaController {
     }
 
     @PutMapping("/stambenazajednica/{id}")
-    @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<StambenaZajednica> updateStambenaZajednica(@PathVariable(value = "id") Long id, @RequestBody StambenaZajednica szDetails) throws Exception {
         StambenaZajednica sz = service.find(id);
         if (sz == null) {
