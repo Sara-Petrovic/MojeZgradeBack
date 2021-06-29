@@ -13,27 +13,25 @@ import rs.fon.silab.njt.mojezgradespringboot.model.StambenaZajednica;
 import rs.fon.silab.njt.mojezgradespringboot.service.StambenaZajednicaService;
 
 @RestController
+@CrossOrigin(origins = "*")
 public class StambenaZajednicaController {
 
     @Autowired
     private StambenaZajednicaService service;
 
     @PostMapping("/stambenazajednica")
-    @CrossOrigin(origins = "http://localhost:4200")
     public StambenaZajednica saveStambenaZajednica(@RequestBody StambenaZajednica sz) throws Exception {
         validateData(sz);
         return service.save(sz);
     }
     
     @GetMapping("/stambenazajednica")
-    @CrossOrigin(origins = "http://localhost:4200")
     public StambenaZajednica findStambenaZajednica(@RequestParam Long id) throws Exception {
         //implementiraj pretragu po drugim kriterijumima
         return service.find(id);
     }
 
     @PutMapping("/stambenazajednica")
-    @CrossOrigin(origins = "http://localhost:4200")
     public StambenaZajednica editStambenaZajednica(@RequestBody StambenaZajednica sz) throws Exception {
         if (service.find(sz.getStambenaZajednicaId()) == null) {
             throw new Exception("Stambena zajednica ne postoji u bazi.");
@@ -43,7 +41,6 @@ public class StambenaZajednicaController {
     }
     
     @DeleteMapping("/stambenazajednica")
-    @CrossOrigin(origins = "http://localhost:4200")
     public StambenaZajednica deleteStambenaZajednica(@RequestParam Long id) throws Exception {
         StambenaZajednica sz = findStambenaZajednica(id); 
         service.delete(sz);
