@@ -8,5 +8,5 @@ import rs.fon.silab.njt.mojezgradespringboot.model.StambenaZajednica;
 
 
 public interface SednicaSkupstineRepository extends JpaRepository<SednicaSkupstine, Long>{
-    List<SednicaSkupstine> findByStambenaZajednicaUlica(String ulica);
+    List<SednicaSkupstine> findByStambenaZajednica_UlicaContaining(final String ulica);
 }
