@@ -37,4 +37,8 @@ public class VlasnikPosebnogDelaService {
         return repo.findByPrezimeContaining(prezimeVlasnika);
     }
 
+    public List<VlasnikPosebnogDela> findByStambenaZajednica(Long szId) {
+         return repo.findByStambenaZajednica_StambenaZajednicaId(szId);
+    }
+
 }

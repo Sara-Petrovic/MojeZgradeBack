@@ -51,6 +51,14 @@ public class VlasnikPosebnogDelaController {
         return vlasnici;
     }
 
+    @GetMapping("/findvlasnikbystambenazajednica/{id}")
+    public List<VlasnikPosebnogDela> getVlasnikPosebnogDelaByPrezime(@PathVariable(value = "id") Long szId)
+            throws ResourceNotFoundException {
+        List<VlasnikPosebnogDela> vlasnici = service.findByStambenaZajednica(szId);
+        //        .orElseThrow(() -> new ResourceNotFoundException("Ne postoji vlasnik sa ovim imenom i prezimenom :: " + imePrezimeVlasnika));
+        //return ResponseEntity.ok().body(vlasnici);
+        return vlasnici;
+    }
     @PutMapping("/vlasnikposebnogdela/{id}")
     public ResponseEntity<VlasnikPosebnogDela> updateVlasnikPosebnogDela(@PathVariable(value = "id") Long vlasnikId,
             @Valid @RequestBody VlasnikPosebnogDela vlasnikDetails) throws ResourceNotFoundException {

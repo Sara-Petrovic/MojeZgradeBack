@@ -9,4 +9,6 @@ import rs.fon.silab.njt.mojezgradespringboot.model.VlasnikPosebnogDela;
 public interface VlasnikPosebnogDelaRepository extends JpaRepository<VlasnikPosebnogDela, Long>{
     //@Query("SELECT u FROM User u WHERE u.status = 1")
     List<VlasnikPosebnogDela> findByPrezimeContaining(String prezime);
+
+    List<VlasnikPosebnogDela> findByStambenaZajednica_StambenaZajednicaId(Long szId);
 }
