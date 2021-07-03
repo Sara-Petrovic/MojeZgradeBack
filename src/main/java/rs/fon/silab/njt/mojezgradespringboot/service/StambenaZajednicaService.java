@@ -34,5 +34,17 @@ public class StambenaZajednicaService {
     public List<StambenaZajednica> getAll() {
         return repo.findAll();
     }
-    
+
+    public List<StambenaZajednica> findByPib(String pib) {
+        return repo.findByPib(pib);
+    }
+
+    public List<StambenaZajednica> findByMaticniBroj(String maticni_broj) {
+        return repo.findByMaticniBroj(maticni_broj);
+    }
+
+    public List<StambenaZajednica> findByUlicaIBroj(String ulica, String broj) {
+        return repo.findByUlicaAndBroj(ulica, broj);
+    }
+
 }

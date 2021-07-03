@@ -1,9 +1,11 @@
 package rs.fon.silab.njt.mojezgradespringboot.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import rs.fon.silab.njt.mojezgradespringboot.exception.ResourceNotFoundException;
 import rs.fon.silab.njt.mojezgradespringboot.model.StambenaZajednica;
@@ -46,6 +49,31 @@ public class StambenaZajednicaController {
             throw new ResourceNotFoundException("Ne postoji stambena zajednica sa ovim id-jem :: " + id);
         }
         return ResponseEntity.ok().body(sz);
+    }
+    
+    @GetMapping("/stambenazajednica/searchbypib")
+    public List<StambenaZajednica> findStambenaZajednicaByPib(@RequestParam String pib) {
+        if(pib.length() != 9){
+            return new ArrayList<>();
+        }
+        List<StambenaZajednica> sz = service.findByPib(pib);
+        return sz;
+    }
+    
+    @GetMapping("/stambenazajednica/searchbymaticnibroj")
+    public List<StambenaZajednica> findStambenaZajednicaByMaticniBroj(@RequestParam String maticni_broj) {
+        if(maticni_broj.length() != 8){
+            return new ArrayList<>();
+        }
+        List<StambenaZajednica> sz = service.findByMaticniBroj(maticni_broj);
+        return sz;
+    }
+    
+    ///stambenazajednica/searchbyulicabroj
+    @GetMapping("/stambenazajednica/searchbyulicabroj")
+    public List<StambenaZajednica> findStambenaZajednicaByUlicaIBroj(@RequestParam String ulica, @RequestParam String broj) {
+        List<StambenaZajednica> sz = service.findByUlicaIBroj(ulica, broj);
+        return sz;
     }
   
     @PutMapping("/stambenazajednica/{id}")
