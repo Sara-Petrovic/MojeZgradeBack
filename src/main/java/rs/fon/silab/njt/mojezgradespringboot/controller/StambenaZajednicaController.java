@@ -1,5 +1,6 @@
 package rs.fon.silab.njt.mojezgradespringboot.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import rs.fon.silab.njt.mojezgradespringboot.exception.ResourceNotFoundException;
 import rs.fon.silab.njt.mojezgradespringboot.model.StambenaZajednica;
@@ -30,7 +32,7 @@ public class StambenaZajednicaController {
             validateData(sz);
         } catch (Exception e) {
             return null;
-        } 
+        }
         return service.save(sz);
     }
 
@@ -40,7 +42,6 @@ public class StambenaZajednicaController {
     }
 
     @GetMapping("/stambenazajednica/{id}")
-    @CrossOrigin(origins = "http://localhost:4200")
     public ResponseEntity<StambenaZajednica> findStambenaZajednica(@PathVariable(value = "id") Long id) throws ResourceNotFoundException {
         StambenaZajednica sz = service.find(id);
         if (sz == null) {
@@ -48,7 +49,35 @@ public class StambenaZajednicaController {
         }
         return ResponseEntity.ok().body(sz);
     }
-
+    
+    @GetMapping("/stambenazajednica/searchbypib")
+    public List<StambenaZajednica> findStambenaZajednicaByPib(@RequestParam String pib) {
+        if(pib.length() != 9){
+            return new ArrayList<>();
+        }
+        List<StambenaZajednica> sz = service.findByPib(pib);
+        return sz;
+    }
+    
+    @GetMapping("/stambenazajednica/searchbymaticnibroj")
+    public List<StambenaZajednica> findStambenaZajednicaByMaticniBroj(@RequestParam String maticni_broj) {
+        if(maticni_broj.length() != 8){
+            return new ArrayList<>();
+        }
+        List<StambenaZajednica> sz = service.findByMaticniBroj(maticni_broj);
+        return sz;
+    }
+    
+    @GetMapping("/stambenazajednica/searchbyulicabroj")
+    public List<StambenaZajednica> findStambenaZajednicaByUlicaIBroj(@RequestParam String ulica, @RequestParam String broj) {
+        if(broj == null || "".equals(broj) || " ".equals(broj)){
+            List<StambenaZajednica> sz = service.findByUlica(ulica);
+        return sz;
+        }
+        List<StambenaZajednica> sz = service.findByUlicaIBroj(ulica, broj);
+        return sz;
+    }
+  
     @PutMapping("/stambenazajednica/{id}")
     public ResponseEntity<StambenaZajednica> updateStambenaZajednica(@PathVariable(value = "id") Long id, @RequestBody StambenaZajednica szDetails) throws Exception {
         StambenaZajednica sz = service.find(id);
@@ -59,7 +88,7 @@ public class StambenaZajednicaController {
             validateData(szDetails);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(null);
-        }   
+        }
         sz.setUlica(szDetails.getUlica());
         sz.setBroj(szDetails.getBroj());
         sz.setBanka(szDetails.getBanka());
@@ -75,7 +104,6 @@ public class StambenaZajednicaController {
     }
 
     @DeleteMapping("/stambenazajednica/{id}")
-    @CrossOrigin(origins = "http://localhost:4200")
     public Map<String, Boolean> deleteStambenaZajednica(@PathVariable(value = "id") Long id) throws ResourceNotFoundException {
         StambenaZajednica sz = service.find(id);
         if (sz == null) {
