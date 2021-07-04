@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -69,9 +68,12 @@ public class StambenaZajednicaController {
         return sz;
     }
     
-    ///stambenazajednica/searchbyulicabroj
     @GetMapping("/stambenazajednica/searchbyulicabroj")
     public List<StambenaZajednica> findStambenaZajednicaByUlicaIBroj(@RequestParam String ulica, @RequestParam String broj) {
+        if(broj == null || "".equals(broj) || " ".equals(broj)){
+            List<StambenaZajednica> sz = service.findByUlica(ulica);
+        return sz;
+        }
         List<StambenaZajednica> sz = service.findByUlicaIBroj(ulica, broj);
         return sz;
     }
