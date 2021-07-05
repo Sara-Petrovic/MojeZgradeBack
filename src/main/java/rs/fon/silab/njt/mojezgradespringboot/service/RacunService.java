@@ -1,5 +1,6 @@
 package rs.fon.silab.njt.mojezgradespringboot.service;
 
+import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,10 @@ public class RacunService {
             return null;
         }
         return optRacun.get();
+    }
+
+    public List<Racun> findAll() {
+       return repo.findAll();
     }
     
     

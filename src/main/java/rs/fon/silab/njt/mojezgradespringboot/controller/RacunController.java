@@ -1,5 +1,6 @@
 package rs.fon.silab.njt.mojezgradespringboot.controller;
 
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,13 @@ public class RacunController {
     public Racun saveRacun(@RequestBody Racun r){
         return service.save(r);
     }
+    
+    @GetMapping("/racun")
+    public ResponseEntity<?> findAllRacun(){
+        List<Racun> r =  service.findAll();
+        return ResponseEntity.ok().body(r);
+    }
+    
     
     @GetMapping("/racun/{id}")
     public ResponseEntity<?> findRacun(@PathVariable Long id){
