@@ -38,7 +38,7 @@ public class RacunController {
             return new ResponseEntity("Vlasnika koga ste proseldili nije u bazi podataka.", HttpStatus.NOT_FOUND);
         }
         Racun newRacun = new Racun(r.getRacunId(), 
-                0, r.getDatumIzdavanja(), r.getStatus(), optVlasnik.get());
+                0, r.getDatumIzdavanja(), r.getStatus(), optVlasnik.get(), r.getUpravnik());
         List<StavkaRacuna> stavke = r.getStavke();
         double ukupnaVrednost = 0;
         for(int i = 0; i < stavke.size(); i++){
@@ -48,13 +48,13 @@ public class RacunController {
         newRacun.setUkupnaVrednost(ukupnaVrednost);
         newRacun = service.save(newRacun, stavke);
         RacunDto returnValue = new RacunDto(newRacun.getRacunId(), newRacun.getUkupnaVrednost(),
-        newRacun.getDatumIzdavanja(), newRacun.getStatus(), newRacun.getVlasnikPosebnogDela(), stavke);
+        newRacun.getDatumIzdavanja(), newRacun.getStatus(), newRacun.getVlasnikPosebnogDela(), newRacun.getUpravnik(), stavke);
         return ResponseEntity.ok().body(returnValue);
     }
     
-    @GetMapping("/racun")
-    public ResponseEntity<?> findAllRacun(){
-        List<Racun> r =  service.findAll();
+    @GetMapping("/racun/all/{userId}")
+    public ResponseEntity<?> findAllRacun(@PathVariable(value = "userId") Long userId){
+        List<Racun> r =  service.findAll(userId);
         return ResponseEntity.ok().body(r);
     }
         
@@ -67,24 +67,24 @@ public class RacunController {
         List<StavkaRacuna> stavke = service.getStavkeRacuna(r);
         return ResponseEntity.ok().body(new RacunDto(r.getRacunId(), 
                 r.getUkupnaVrednost(), r.getDatumIzdavanja(), 
-                r.getStatus(), r.getVlasnikPosebnogDela(), stavke));
+                r.getStatus(), r.getVlasnikPosebnogDela(), r.getUpravnik(), stavke));
     }
     
-    @GetMapping("/racun/searchbystatus")
-    public ResponseEntity<?> findRacunByStatus(@RequestParam(value = "status") String status){
+    @GetMapping("/racun/user/{userId}/searchbystatus")
+    public ResponseEntity<?> findRacunByStatus(@PathVariable(value = "userId") Long userId, @RequestParam(value = "status") String status){
         
         Status statusEnum = Status.valueOf(status);
-        List<Racun> r =  service.findByStatus(statusEnum);
+        List<Racun> r =  service.findByStatus(userId,statusEnum);
         return ResponseEntity.ok().body(r);
     }
     
-    @GetMapping("/racun/searchbyvlasnik")
-    public ResponseEntity<?> findRacunByStatus(@RequestParam(value = "vlasnik") Long vlasnik){
+    @GetMapping("/racun/user/{userId}/searchbyvlasnik")
+    public ResponseEntity<?> findRacunByStatus(@PathVariable(value = "userId") Long userId, @RequestParam(value = "vlasnik") Long vlasnik){
         Optional<VlasnikPosebnogDela> optVlasnik = vlasnikService.findById(vlasnik);
         if(!optVlasnik.isPresent()){
             return ResponseEntity.ok().body(new ArrayList<>());
         }
-        List<Racun> r =  service.findByVlasnik(optVlasnik.get());
+        List<Racun> r =  service.findByVlasnik(userId,optVlasnik.get());
         return ResponseEntity.ok().body(r);
     }
     
@@ -102,7 +102,7 @@ public class RacunController {
         List<StavkaRacuna> stavke = service.getStavkeRacuna(updatedRacun);
         return ResponseEntity.ok().body(new RacunDto(updatedRacun.getRacunId(), 
                 updatedRacun.getUkupnaVrednost(), updatedRacun.getDatumIzdavanja(), 
-                updatedRacun.getStatus(), updatedRacun.getVlasnikPosebnogDela(), stavke));
+                updatedRacun.getStatus(), updatedRacun.getVlasnikPosebnogDela(), updatedRacun.getUpravnik(), stavke));
     }
     
     @DeleteMapping("/racun/{id}")

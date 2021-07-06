@@ -8,9 +8,12 @@ import org.springframework.transaction.annotation.Transactional;
 import rs.fon.silab.njt.mojezgradespringboot.model.Racun;
 import rs.fon.silab.njt.mojezgradespringboot.model.Status;
 import rs.fon.silab.njt.mojezgradespringboot.model.StavkaRacuna;
+import rs.fon.silab.njt.mojezgradespringboot.model.User;
 import rs.fon.silab.njt.mojezgradespringboot.model.VlasnikPosebnogDela;
 import rs.fon.silab.njt.mojezgradespringboot.repository.RacunRepository;
 import rs.fon.silab.njt.mojezgradespringboot.repository.StavkaRacunaRepository;
+import rs.fon.silab.njt.mojezgradespringboot.repository.UserRepository;
+import rs.fon.silab.njt.mojezgradespringboot.repository.VlasnikPosebnogDelaRepository;
 
 @Service
 @Transactional
@@ -20,6 +23,8 @@ public class RacunService {
     private RacunRepository repo;
     @Autowired
     private StavkaRacunaRepository stavkeRacnaRepo;
+    @Autowired 
+    private UserRepository userRepo;
 
     public Racun save(Racun r, List<StavkaRacuna> stavke) {
         Racun saved = repo.save(r);
@@ -42,16 +47,19 @@ public class RacunService {
         return optRacun.get();
     }
 
-    public List<Racun> findAll() {
-        return repo.findAll();
+    public List<Racun> findAll(Long userId) {
+        User user = userRepo.getById(userId);
+        return repo.findAllByUpravnik(user);
     }
 
-    public List<Racun> findByStatus(Status statusEnum) {
-        return repo.findByStatus(statusEnum);
+    public List<Racun> findByStatus(Long userId, Status statusEnum) {
+        User user = userRepo.getById(userId);
+        return repo.findByStatusAndUpravnik(statusEnum, user);
     }
 
-    public List<Racun> findByVlasnik(VlasnikPosebnogDela vlasnik) {
-        return repo.findByVlasnikPosebnogDela(vlasnik);
+    public List<Racun> findByVlasnik(Long userId, VlasnikPosebnogDela vlasnik) {
+        User user = userRepo.getById(userId);
+        return repo.findByVlasnikPosebnogDelaAndUpravnik(vlasnik, user);
     }
 
     public void deleteRacun(Racun racun) {
