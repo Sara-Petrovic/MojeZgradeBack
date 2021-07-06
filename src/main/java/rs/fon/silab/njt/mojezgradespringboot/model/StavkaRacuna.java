@@ -2,29 +2,32 @@ package rs.fon.silab.njt.mojezgradespringboot.model;
 
 import java.io.Serializable;
 import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 @Entity
-public class StavkaRacuna implements Serializable{
-    @Id
-    @GeneratedValue
-    private int redniBroj;
+public class StavkaRacuna implements Serializable {
+
+    @EmbeddedId
+    private StavkaRacunKey stavkaRacunaId;
     private double cena;
     @ManyToOne
     @JoinColumn(name = "uslugaId")
     private Usluga usluga;
     @ManyToOne
-    @JoinColumn(name = "racunId")
+    @JoinColumn(name = "racunId", insertable = false, updatable = false)
     private Racun racun;
 
     public StavkaRacuna() {
+        stavkaRacunaId = new StavkaRacunKey();
     }
 
     public StavkaRacuna(int redniBroj, double cena, Usluga usluga, Racun racun) {
+        stavkaRacunaId = new StavkaRacunKey();
+        this.stavkaRacunaId.setRacunId(racun.getRacunId());
         setRedniBroj(redniBroj);
         setCena(cena);
         setUsluga(usluga);
@@ -32,14 +35,14 @@ public class StavkaRacuna implements Serializable{
     }
 
     public int getRedniBroj() {
-        return redniBroj;
+        return stavkaRacunaId.getRedniBroj();
     }
 
     public void setRedniBroj(int redniBroj) {
-        if(redniBroj < 1){
+        if (redniBroj < 1) {
             throw new RuntimeException("Redni broj ne moze da bude manji od 1.");
         }
-        this.redniBroj = redniBroj;
+        stavkaRacunaId.setRedniBroj(redniBroj);
     }
 
     public double getCena() {
@@ -47,7 +50,7 @@ public class StavkaRacuna implements Serializable{
     }
 
     public void setCena(double cena) {
-        if(cena < 0){
+        if (cena < 0) {
             throw new RuntimeException("Cena ne moze da bude manja od 0.");
         }
         this.cena = cena;
@@ -66,12 +69,13 @@ public class StavkaRacuna implements Serializable{
     }
 
     public void setRacun(Racun racun) {
+        this.stavkaRacunaId.setRacunId(racun.getRacunId());
         this.racun = racun;
     }
 
     @Override
     public String toString() {
-        return "StavkaRacuna{" + "redniBroj=" + redniBroj + ", cena=" + cena + ", usluga=" + usluga + ", racun=" + racun + '}';
+        return "StavkaRacuna{" + "redniBroj=" + stavkaRacunaId.getRedniBroj() + ", cena=" + cena + ", usluga=" + usluga + ", racun=" + racun + '}';
     }
 
     @Override
@@ -92,7 +96,7 @@ public class StavkaRacuna implements Serializable{
             return false;
         }
         final StavkaRacuna other = (StavkaRacuna) obj;
-        if (this.redniBroj != other.redniBroj) {
+        if (this.stavkaRacunaId != other.stavkaRacunaId) {
             return false;
         }
         if (!Objects.equals(this.racun, other.racun)) {
@@ -100,6 +104,5 @@ public class StavkaRacuna implements Serializable{
         }
         return true;
     }
-    
-    
+
 }

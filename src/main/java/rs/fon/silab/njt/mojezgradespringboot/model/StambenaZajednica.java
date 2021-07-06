@@ -2,6 +2,7 @@ package rs.fon.silab.njt.mojezgradespringboot.model;
 
 import java.io.Serializable;
 import java.util.Objects;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -24,7 +25,7 @@ public class StambenaZajednica implements Serializable {
     private String banka;
     private String pib;
     private String maticniBroj;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "userId")
     private User upravnik;
 

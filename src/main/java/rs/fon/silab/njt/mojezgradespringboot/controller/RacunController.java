@@ -1,6 +1,8 @@
 package rs.fon.silab.njt.mojezgradespringboot.controller;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,19 +12,45 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import rs.fon.silab.njt.mojezgradespringboot.dto.RacunDto;
 import rs.fon.silab.njt.mojezgradespringboot.model.Racun;
+import rs.fon.silab.njt.mojezgradespringboot.model.Status;
+import rs.fon.silab.njt.mojezgradespringboot.model.StavkaRacuna;
+import rs.fon.silab.njt.mojezgradespringboot.model.VlasnikPosebnogDela;
 import rs.fon.silab.njt.mojezgradespringboot.service.RacunService;
+import rs.fon.silab.njt.mojezgradespringboot.service.VlasnikPosebnogDelaService;
 
 @RestController
 @CrossOrigin(origins = "*")
 public class RacunController {
     @Autowired
     private RacunService service;
+    @Autowired
+    private VlasnikPosebnogDelaService vlasnikService;
     
     @PostMapping("/racun")
-    public Racun saveRacun(@RequestBody Racun r){
-        return service.save(r);
+    public ResponseEntity<?> saveRacun(@RequestBody RacunDto r){
+        Optional<VlasnikPosebnogDela> optVlasnik = vlasnikService.findById(r.getVlasnikPosebnogDela().getVlasnikId());
+        
+        if(!optVlasnik.isPresent()){
+            return new ResponseEntity("Vlasnika koga ste proseldili nije u bazi podataka.", HttpStatus.NOT_FOUND);
+        }
+        Racun newRacun = new Racun(r.getRacunId(), 
+                0, r.getDatumIzdavanja(), r.getStatus(), optVlasnik.get());
+        
+        List<StavkaRacuna> stavke = r.getStavke();
+        double ukupnaVrednost = 0;
+        for(int i = 0; i < stavke.size(); i++){
+            stavke.get(i).setRedniBroj(i + 1);
+            ukupnaVrednost += stavke.get(i).getCena();
+        }
+        newRacun.setUkupnaVrednost(ukupnaVrednost);
+        newRacun = service.save(newRacun, stavke);
+        RacunDto returnValue = new RacunDto(newRacun.getRacunId(), newRacun.getUkupnaVrednost(),
+        newRacun.getDatumIzdavanja(), newRacun.getStatus(), newRacun.getVlasnikPosebnogDela(), stavke);
+        return ResponseEntity.ok().body(returnValue);
     }
     
     @GetMapping("/racun")
@@ -30,8 +58,7 @@ public class RacunController {
         List<Racun> r =  service.findAll();
         return ResponseEntity.ok().body(r);
     }
-    
-    
+        
     @GetMapping("/racun/{id}")
     public ResponseEntity<?> findRacun(@PathVariable Long id){
         Racun r =  service.find(id);
@@ -40,6 +67,25 @@ public class RacunController {
         }
         return ResponseEntity.ok().body(r);
     }
+    
+    @GetMapping("/racun/searchbystatus")
+    public ResponseEntity<?> findRacunByStatus(@RequestParam(value = "status") String status){
+        
+        Status statusEnum = Status.valueOf(status);
+        List<Racun> r =  service.findByStatus(statusEnum);
+        return ResponseEntity.ok().body(r);
+    }
+    
+    @GetMapping("/racun/searchbyvlasnik")
+    public ResponseEntity<?> findRacunByStatus(@RequestParam(value = "vlasnik") Long vlasnik){
+        Optional<VlasnikPosebnogDela> optVlasnik = vlasnikService.findById(vlasnik);
+        if(!optVlasnik.isPresent()){
+            return ResponseEntity.ok().body(new ArrayList<>());
+        }
+        List<Racun> r =  service.findByVlasnik(optVlasnik.get());
+        return ResponseEntity.ok().body(r);
+    }
+    
 
     @PutMapping("/racun/{id}")
     public ResponseEntity<?> updateRacun(@PathVariable Long id, @RequestBody Racun racun) throws Exception{
@@ -49,7 +95,7 @@ public class RacunController {
         }
         updatedRacun.setStatus(racun.getStatus());
         /*
-            nije moguce da se menja kog datuma je izdat racun, na koga glasi ili na koju sumu
+            nije moguce da se menja kog datuma je izdat racun, njegove stavke, na koga glasi ili na koju sumu
         */
         return ResponseEntity.ok().body(service.save(updatedRacun));
     }

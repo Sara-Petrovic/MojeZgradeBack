@@ -3,6 +3,8 @@ package rs.fon.silab.njt.mojezgradespringboot.model;
 import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
@@ -13,6 +15,7 @@ public class Usluga implements Serializable{
     private Long uslugaId;
     private String naziv;
     private double cena;
+    @Enumerated(EnumType.STRING)
     private JedinicaMere jedinicaMere;
 
     public Usluga() {
