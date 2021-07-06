@@ -2,7 +2,7 @@ package rs.fon.silab.njt.mojezgradespringboot.model;
 
 import java.io.Serializable;
 import java.util.Objects;
-import javax.persistence.Column;
+import javax.persistence.CascadeType;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -17,7 +17,7 @@ public class StavkaRacuna implements Serializable {
     @ManyToOne
     @JoinColumn(name = "uslugaId")
     private Usluga usluga;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "racunId", insertable = false, updatable = false)
     private Racun racun;
 

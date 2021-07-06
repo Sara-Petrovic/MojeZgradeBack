@@ -1,6 +1,5 @@
 package rs.fon.silab.njt.mojezgradespringboot.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,34 +15,35 @@ import rs.fon.silab.njt.mojezgradespringboot.repository.StavkaRacunaRepository;
 @Service
 @Transactional
 public class RacunService {
+
     @Autowired
     private RacunRepository repo;
-    @Autowired 
+    @Autowired
     private StavkaRacunaRepository stavkeRacnaRepo;
 
     public Racun save(Racun r, List<StavkaRacuna> stavke) {
         Racun saved = repo.save(r);
-        for(StavkaRacuna stavka : stavke){
+        for (StavkaRacuna stavka : stavke) {
             stavka.setRacun(saved);
         }
         stavkeRacnaRepo.saveAll(stavke);
         return saved;
     }
-    
-     public Racun save(Racun r) {
+
+    public Racun save(Racun r) {
         return repo.save(r);
     }
 
     public Racun find(Long id) {
         Optional<Racun> optRacun = repo.findById(id);
-        if(!optRacun.isPresent()){
+        if (!optRacun.isPresent()) {
             return null;
         }
         return optRacun.get();
     }
 
     public List<Racun> findAll() {
-       return repo.findAll();
+        return repo.findAll();
     }
 
     public List<Racun> findByStatus(Status statusEnum) {
@@ -53,6 +53,17 @@ public class RacunService {
     public List<Racun> findByVlasnik(VlasnikPosebnogDela vlasnik) {
         return repo.findByVlasnikPosebnogDela(vlasnik);
     }
-    
-    
+
+    public void deleteRacun(Racun racun) {
+        repo.delete(racun);
+    }
+
+    public List<StavkaRacuna> getStavkeRacuna(Racun racun) {
+       Optional<Racun> optRacun = repo.findById(racun.getRacunId());
+        if (!optRacun.isPresent()) {
+            return null;
+        }
+        Racun r = optRacun.get();
+        return stavkeRacnaRepo.findAllByRacun(r);
+    }
 }

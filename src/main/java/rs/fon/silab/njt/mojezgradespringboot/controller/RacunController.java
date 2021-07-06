@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,13 +34,11 @@ public class RacunController {
     @PostMapping("/racun")
     public ResponseEntity<?> saveRacun(@RequestBody RacunDto r){
         Optional<VlasnikPosebnogDela> optVlasnik = vlasnikService.findById(r.getVlasnikPosebnogDela().getVlasnikId());
-        
         if(!optVlasnik.isPresent()){
             return new ResponseEntity("Vlasnika koga ste proseldili nije u bazi podataka.", HttpStatus.NOT_FOUND);
         }
         Racun newRacun = new Racun(r.getRacunId(), 
                 0, r.getDatumIzdavanja(), r.getStatus(), optVlasnik.get());
-        
         List<StavkaRacuna> stavke = r.getStavke();
         double ukupnaVrednost = 0;
         for(int i = 0; i < stavke.size(); i++){
@@ -65,7 +64,10 @@ public class RacunController {
         if(r == null){
             return new ResponseEntity<>("Racun sa ovim id nije pronadjen.",HttpStatus.NOT_FOUND);
         }
-        return ResponseEntity.ok().body(r);
+        List<StavkaRacuna> stavke = service.getStavkeRacuna(r);
+        return ResponseEntity.ok().body(new RacunDto(r.getRacunId(), 
+                r.getUkupnaVrednost(), r.getDatumIzdavanja(), 
+                r.getStatus(), r.getVlasnikPosebnogDela(), stavke));
     }
     
     @GetMapping("/racun/searchbystatus")
@@ -86,7 +88,6 @@ public class RacunController {
         return ResponseEntity.ok().body(r);
     }
     
-
     @PutMapping("/racun/{id}")
     public ResponseEntity<?> updateRacun(@PathVariable Long id, @RequestBody Racun racun) throws Exception{
         Racun updatedRacun =  service.find(id);
@@ -97,7 +98,20 @@ public class RacunController {
         /*
             nije moguce da se menja kog datuma je izdat racun, njegove stavke, na koga glasi ili na koju sumu
         */
-        return ResponseEntity.ok().body(service.save(updatedRacun));
+        updatedRacun = service.save(updatedRacun);
+        List<StavkaRacuna> stavke = service.getStavkeRacuna(updatedRacun);
+        return ResponseEntity.ok().body(new RacunDto(updatedRacun.getRacunId(), 
+                updatedRacun.getUkupnaVrednost(), updatedRacun.getDatumIzdavanja(), 
+                updatedRacun.getStatus(), updatedRacun.getVlasnikPosebnogDela(), stavke));
     }
     
+    @DeleteMapping("/racun/{id}")
+    public ResponseEntity<?> deleteRacun(@PathVariable Long id) throws Exception{
+        Racun racun =  service.find(id);
+        if(racun == null){
+            return new ResponseEntity<>("Racun sa ovom sifrom ne postoji", HttpStatus.NOT_FOUND);
+        }
+        service.deleteRacun(racun);
+        return ResponseEntity.ok().body("Racun sa id-jem: " + id + " je uspešno izbrisan.");
+    }
 }
