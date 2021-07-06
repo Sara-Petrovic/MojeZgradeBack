@@ -43,7 +43,7 @@ public class RacunController {
         double ukupnaVrednost = 0;
         for(int i = 0; i < stavke.size(); i++){
             stavke.get(i).setRedniBroj(i + 1);
-            ukupnaVrednost += stavke.get(i).getCena();
+            ukupnaVrednost += stavke.get(i).getKolicina() * stavke.get(i).getCena();
         }
         newRacun.setUkupnaVrednost(ukupnaVrednost);
         newRacun = service.save(newRacun, stavke);
