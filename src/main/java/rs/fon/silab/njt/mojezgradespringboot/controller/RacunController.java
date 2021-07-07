@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import rs.fon.silab.njt.mojezgradespringboot.dto.RacunDto;
+import rs.fon.silab.njt.mojezgradespringboot.exception.UnauthorizedException;
 import rs.fon.silab.njt.mojezgradespringboot.model.Racun;
 import rs.fon.silab.njt.mojezgradespringboot.model.Status;
 import rs.fon.silab.njt.mojezgradespringboot.model.StavkaRacuna;
@@ -26,89 +27,90 @@ import rs.fon.silab.njt.mojezgradespringboot.service.VlasnikPosebnogDelaService;
 @RestController
 @CrossOrigin(origins = "*")
 public class RacunController {
+
     @Autowired
     private RacunService service;
     @Autowired
     private VlasnikPosebnogDelaService vlasnikService;
-    
+
     @PostMapping("/racun")
-    public ResponseEntity<?> saveRacun(@RequestBody RacunDto r){
+    public ResponseEntity<?> saveRacun(@RequestBody RacunDto r) {
         Optional<VlasnikPosebnogDela> optVlasnik = vlasnikService.findById(r.getVlasnikPosebnogDela().getVlasnikId());
-        if(!optVlasnik.isPresent()){
+        if (!optVlasnik.isPresent()) {
             return new ResponseEntity("Vlasnika koga ste proseldili nije u bazi podataka.", HttpStatus.NOT_FOUND);
         }
-        Racun newRacun = new Racun(r.getRacunId(), 
+        Racun newRacun = new Racun(r.getRacunId(),
                 0, r.getDatumIzdavanja(), r.getStatus(), optVlasnik.get(), r.getUpravnik());
         List<StavkaRacuna> stavke = r.getStavke();
         double ukupnaVrednost = 0;
-        for(int i = 0; i < stavke.size(); i++){
+        for (int i = 0; i < stavke.size(); i++) {
             stavke.get(i).setRedniBroj(i + 1);
             ukupnaVrednost += stavke.get(i).getKolicina() * stavke.get(i).getCena();
         }
         newRacun.setUkupnaVrednost(ukupnaVrednost);
         newRacun = service.save(newRacun, stavke);
         RacunDto returnValue = new RacunDto(newRacun.getRacunId(), newRacun.getUkupnaVrednost(),
-        newRacun.getDatumIzdavanja(), newRacun.getStatus(), newRacun.getVlasnikPosebnogDela(), newRacun.getUpravnik(), stavke);
+                newRacun.getDatumIzdavanja(), newRacun.getStatus(), newRacun.getVlasnikPosebnogDela(), newRacun.getUpravnik(), stavke);
         return ResponseEntity.ok().body(returnValue);
     }
-    
-    @GetMapping("/racun/all/{userId}")
-    public ResponseEntity<?> findAllRacun(@PathVariable(value = "userId") Long userId){
-        List<Racun> r =  service.findAll(userId);
+
+    @GetMapping("/racun/all/{userId}/{loginToken}")
+    public ResponseEntity<?> findAllRacun(@PathVariable(value = "userId") Long userId, @PathVariable(value = "loginToken") String loginToken) throws UnauthorizedException {
+        List<Racun> r = service.findAll(userId, loginToken);
         return ResponseEntity.ok().body(r);
     }
-        
+
     @GetMapping("/racun/{id}")
-    public ResponseEntity<?> findRacun(@PathVariable Long id){
-        Racun r =  service.find(id);
-        if(r == null){
-            return new ResponseEntity<>("Racun sa ovim id nije pronadjen.",HttpStatus.NOT_FOUND);
+    public ResponseEntity<?> findRacun(@PathVariable Long id) {
+        Racun r = service.find(id);
+        if (r == null) {
+            return new ResponseEntity<>("Racun sa ovim id nije pronadjen.", HttpStatus.NOT_FOUND);
         }
         List<StavkaRacuna> stavke = service.getStavkeRacuna(r);
-        return ResponseEntity.ok().body(new RacunDto(r.getRacunId(), 
-                r.getUkupnaVrednost(), r.getDatumIzdavanja(), 
+        return ResponseEntity.ok().body(new RacunDto(r.getRacunId(),
+                r.getUkupnaVrednost(), r.getDatumIzdavanja(),
                 r.getStatus(), r.getVlasnikPosebnogDela(), r.getUpravnik(), stavke));
     }
-    
-    @GetMapping("/racun/user/{userId}/searchbystatus")
-    public ResponseEntity<?> findRacunByStatus(@PathVariable(value = "userId") Long userId, @RequestParam(value = "status") String status){
-        
+
+    @GetMapping("/racun/user/{userId}/{loginToken}/searchbystatus")
+    public ResponseEntity<?> findRacunByStatus(@PathVariable(value = "userId") Long userId, @PathVariable(value = "loginToken") String loginToken, @RequestParam(value = "status") String status) throws UnauthorizedException {
+
         Status statusEnum = Status.valueOf(status);
-        List<Racun> r =  service.findByStatus(userId,statusEnum);
+        List<Racun> r = service.findByStatus(userId, loginToken, statusEnum);
         return ResponseEntity.ok().body(r);
     }
-    
-    @GetMapping("/racun/user/{userId}/searchbyvlasnik")
-    public ResponseEntity<?> findRacunByStatus(@PathVariable(value = "userId") Long userId, @RequestParam(value = "vlasnik") Long vlasnik){
+
+    @GetMapping("/racun/user/{userId}/{loginToken}/searchbyvlasnik")
+    public ResponseEntity<?> findRacunByVlasnik(@PathVariable(value = "userId") Long userId, @PathVariable(value = "loginToken") String loginToken, @RequestParam(value = "vlasnik") Long vlasnik) throws UnauthorizedException {
         Optional<VlasnikPosebnogDela> optVlasnik = vlasnikService.findById(vlasnik);
-        if(!optVlasnik.isPresent()){
+        if (!optVlasnik.isPresent()) {
             return ResponseEntity.ok().body(new ArrayList<>());
         }
-        List<Racun> r =  service.findByVlasnik(userId,optVlasnik.get());
+        List<Racun> r = service.findByVlasnik(userId, loginToken, optVlasnik.get());
         return ResponseEntity.ok().body(r);
     }
-    
+
     @PutMapping("/racun/{id}")
-    public ResponseEntity<?> updateRacun(@PathVariable Long id, @RequestBody Racun racun) throws Exception{
-        Racun updatedRacun =  service.find(id);
-        if(updatedRacun == null){
+    public ResponseEntity<?> updateRacun(@PathVariable Long id, @RequestBody Racun racun) throws Exception {
+        Racun updatedRacun = service.find(id);
+        if (updatedRacun == null) {
             throw new Exception();
         }
         updatedRacun.setStatus(racun.getStatus());
         /*
             nije moguce da se menja kog datuma je izdat racun, njegove stavke, na koga glasi ili na koju sumu
-        */
+         */
         updatedRacun = service.save(updatedRacun);
         List<StavkaRacuna> stavke = service.getStavkeRacuna(updatedRacun);
-        return ResponseEntity.ok().body(new RacunDto(updatedRacun.getRacunId(), 
-                updatedRacun.getUkupnaVrednost(), updatedRacun.getDatumIzdavanja(), 
+        return ResponseEntity.ok().body(new RacunDto(updatedRacun.getRacunId(),
+                updatedRacun.getUkupnaVrednost(), updatedRacun.getDatumIzdavanja(),
                 updatedRacun.getStatus(), updatedRacun.getVlasnikPosebnogDela(), updatedRacun.getUpravnik(), stavke));
     }
-    
+
     @DeleteMapping("/racun/{id}")
-    public ResponseEntity<?> deleteRacun(@PathVariable Long id) throws Exception{
-        Racun racun =  service.find(id);
-        if(racun == null){
+    public ResponseEntity<?> deleteRacun(@PathVariable Long id) throws Exception {
+        Racun racun = service.find(id);
+        if (racun == null) {
             return new ResponseEntity<>("Racun sa ovom sifrom ne postoji", HttpStatus.NOT_FOUND);
         }
         service.deleteRacun(racun);

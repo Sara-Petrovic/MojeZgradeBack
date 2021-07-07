@@ -1,5 +1,7 @@
 package rs.fon.silab.njt.mojezgradespringboot.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,6 +15,7 @@ public class User implements Serializable{
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long userId;
     private String email;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
     private String firstName;
     private String lastName;
@@ -44,6 +47,7 @@ public class User implements Serializable{
         this.email = email;
     }
 
+    @JsonIgnore
     public String getPassword() {
         return password;
     }
