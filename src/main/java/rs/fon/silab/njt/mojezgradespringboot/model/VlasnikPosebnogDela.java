@@ -21,15 +21,12 @@ public class VlasnikPosebnogDela implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long vlasnikId;
-    @NotNull
-    @Size(min=3, message="Ime mora imati najmanje 3 karaktera.")
+    //@Size(min=3, message="Ime mora imati najmanje 3 karaktera.")
     private String ime;
     
-    @NotNull
-    @Size(min=3, message="Prezime mora imati najmanje 3 karaktera.")
+    //@Size(min=3, message="Prezime mora imati najmanje 3 karaktera.")
     private String prezime;
     
-    @NotEmpty
     private String brojPosebnogDela;
     
     private double velicinaPosebnogDela;
@@ -41,7 +38,6 @@ public class VlasnikPosebnogDela implements Serializable {
     
     @ManyToOne
     @JoinColumn(name = "stambenaZajednicaId")
-    @NotNull
     private StambenaZajednica stambenaZajednica;
 
     public VlasnikPosebnogDela() {

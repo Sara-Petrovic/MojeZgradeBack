@@ -131,6 +131,7 @@ public class StambenaZajednicaController {
         if (sz.getTekuciRacun().length() != 18) {
             throw new Exception("Broj racuna nije ispravno unet: Broj racuna mora da ima tacno 18 cifara.");
         }
+        
     }
 
 }

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import rs.fon.silab.njt.mojezgradespringboot.exception.ResourceNotFoundException;
+import rs.fon.silab.njt.mojezgradespringboot.model.StambenaZajednica;
 import rs.fon.silab.njt.mojezgradespringboot.model.VlasnikPosebnogDela;
 import rs.fon.silab.njt.mojezgradespringboot.service.VlasnikPosebnogDelaService;
 
@@ -26,7 +27,13 @@ public class VlasnikPosebnogDelaController {
     private VlasnikPosebnogDelaService service;
 
     @PostMapping("/vlasnikposebnogdela")
-    public VlasnikPosebnogDela saveVlasnikPosebnogDela(@Valid @RequestBody VlasnikPosebnogDela vlasnik) {
+    public VlasnikPosebnogDela saveVlasnikPosebnogDela(@Valid @RequestBody VlasnikPosebnogDela vlasnik) throws Exception {
+        try {
+            validateData(vlasnik);
+        } catch (Exception e) {
+            System.out.println("poruka " + e.getMessage());
+            throw new Exception(e.getMessage());
+        }
         return service.save(vlasnik);
     }
 
@@ -86,5 +93,23 @@ public class VlasnikPosebnogDelaController {
         Map<String, Boolean> response = new HashMap<>();
         response.put("deleted", Boolean.TRUE);
         return response;
+    }
+    
+    private void validateData(VlasnikPosebnogDela v) throws Exception {
+        String msg = "";
+        if (v.getIme().length() < 3 ) {
+            msg+="Ime mora imati najmanje 3 slova. ";
+        }
+        if (v.getPrezime().length() < 3) {
+            msg+="Prezime mora imati najmanje 3 slova. ";
+        }
+        if (v.getStambenaZajednica()==null) {
+            msg+="Morate uneti stambenu zajednicu. ";
+        }
+        if (v.getBrojPosebnogDela().equals("")) {
+           msg+="Morate uneti broj stana vlasnika. ";
+        }
+        if(!msg.equals("")){
+        throw new Exception(msg);}
     }
 }
