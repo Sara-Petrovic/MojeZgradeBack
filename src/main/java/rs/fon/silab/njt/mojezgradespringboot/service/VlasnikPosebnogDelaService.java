@@ -29,12 +29,12 @@ public class VlasnikPosebnogDelaService {
         repo.delete(vlasnik);
     }
 
-    public List<VlasnikPosebnogDela> findAll() {
-        return repo.findAll();
+    public List<VlasnikPosebnogDela> findAll(Long userId) {
+        return repo.findByStambenaZajednica_Upravnik_UserId(userId);
     }
 
-    public List<VlasnikPosebnogDela> findByPrezime(String prezimeVlasnika) {
-        return repo.findByPrezimeContaining(prezimeVlasnika);
+    public List<VlasnikPosebnogDela> findByPrezime(String prezimeVlasnika,Long userId) {
+        return repo.findByPrezimeContainingAndStambenaZajednica_Upravnik_UserId(prezimeVlasnika, userId);
     }
 
     public List<VlasnikPosebnogDela> findByStambenaZajednica(Long szId) {

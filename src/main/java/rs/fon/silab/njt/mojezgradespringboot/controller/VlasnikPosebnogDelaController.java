@@ -37,22 +37,24 @@ public class VlasnikPosebnogDelaController {
         return service.save(vlasnik);
     }
 
-    @GetMapping("/vlasnikposebnogdela")
-    public List<VlasnikPosebnogDela> getAllVlasnikPosebnogDela() {
-        return service.findAll();
+    @GetMapping("/vlasnikposebnogdela/{userid}")
+    public List<VlasnikPosebnogDela> getAllVlasnikPosebnogDela(@PathVariable(value = "userid") Long userId) {
+        return service.findAll(userId);
     }
 
-    @GetMapping("/vlasnikposebnogdela/{id}")
+    @GetMapping("/findvlasnikbyid/{id}")
     public ResponseEntity<VlasnikPosebnogDela> getVlasnikPosebnogDelaById(@PathVariable(value = "id") Long vlasnikId)
             throws ResourceNotFoundException {
         VlasnikPosebnogDela v = service.findById(vlasnikId)
                 .orElseThrow(() -> new ResourceNotFoundException("Ne postoji vlasnik sa ovim id-jem :: " + vlasnikId));
         return ResponseEntity.ok().body(v);
     }
-    @GetMapping("/findvlasnikbyprezime/{prezime}")
-    public List<VlasnikPosebnogDela> getVlasnikPosebnogDelaByPrezime(@PathVariable(value = "prezime") String prezimeVlasnika)
+
+    @GetMapping("/findvlasnikbyprezime/{prezime}/{userid}")
+    public List<VlasnikPosebnogDela> getVlasnikPosebnogDelaByPrezime(@PathVariable(value = "prezime") String prezimeVlasnika,
+            @PathVariable(value = "userid") Long userId)
             throws ResourceNotFoundException {
-        List<VlasnikPosebnogDela> vlasnici = service.findByPrezime(prezimeVlasnika);
+        List<VlasnikPosebnogDela> vlasnici = service.findByPrezime(prezimeVlasnika, userId);
         //        .orElseThrow(() -> new ResourceNotFoundException("Ne postoji vlasnik sa ovim imenom i prezimenom :: " + imePrezimeVlasnika));
         //return ResponseEntity.ok().body(vlasnici);
         return vlasnici;
@@ -66,6 +68,7 @@ public class VlasnikPosebnogDelaController {
         //return ResponseEntity.ok().body(vlasnici);
         return vlasnici;
     }
+
     @PutMapping("/vlasnikposebnogdela/{id}")
     public ResponseEntity<VlasnikPosebnogDela> updateVlasnikPosebnogDela(@PathVariable(value = "id") Long vlasnikId,
             @Valid @RequestBody VlasnikPosebnogDela vlasnikDetails) throws ResourceNotFoundException {
@@ -94,22 +97,23 @@ public class VlasnikPosebnogDelaController {
         response.put("deleted", Boolean.TRUE);
         return response;
     }
-    
+
     private void validateData(VlasnikPosebnogDela v) throws Exception {
         String msg = "";
-        if (v.getIme().length() < 3 ) {
-            msg+="Ime mora imati najmanje 3 slova. ";
+        if (v.getIme().length() < 3) {
+            msg += "Ime mora imati najmanje 3 slova. ";
         }
         if (v.getPrezime().length() < 3) {
-            msg+="Prezime mora imati najmanje 3 slova. ";
+            msg += "Prezime mora imati najmanje 3 slova. ";
         }
-        if (v.getStambenaZajednica()==null) {
-            msg+="Morate uneti stambenu zajednicu. ";
+        if (v.getStambenaZajednica() == null) {
+            msg += "Morate uneti stambenu zajednicu. ";
         }
         if (v.getBrojPosebnogDela().equals("")) {
-           msg+="Morate uneti broj stana vlasnika. ";
+            msg += "Morate uneti broj stana vlasnika. ";
         }
-        if(!msg.equals("")){
-        throw new Exception(msg);}
+        if (!msg.equals("")) {
+            throw new Exception(msg);
+        }
     }
 }
