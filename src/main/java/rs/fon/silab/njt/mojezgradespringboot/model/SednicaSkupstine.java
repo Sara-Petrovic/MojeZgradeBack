@@ -7,6 +7,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
@@ -16,7 +17,7 @@ import javax.persistence.ManyToOne;
 public class SednicaSkupstine implements Serializable{
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long sednicaSkupstineId;
     private Date datumOdrzavanja;
     private int brojPrisutnih;
@@ -26,7 +27,7 @@ public class SednicaSkupstine implements Serializable{
     @JoinColumn(name = "stambenaZajednicaId")
     private StambenaZajednica stambenaZajednica;
     
-    @ManyToMany(targetEntity = VlasnikPosebnogDela.class,cascade = CascadeType.ALL)
+    @ManyToMany(targetEntity = VlasnikPosebnogDela.class,cascade = CascadeType.MERGE)
     private List<VlasnikPosebnogDela> vlasnici; //set je efikasniji od liste kod manyToMany asocijacije
 
     public SednicaSkupstine() {
@@ -91,6 +92,12 @@ public class SednicaSkupstine implements Serializable{
     public void setStambenaZajednica(StambenaZajednica stambenaZajednica) {
         this.stambenaZajednica = stambenaZajednica;
     }
+
+    @Override
+    public String toString() {
+        return "SednicaSkupstine{" + "sednicaSkupstineId=" + sednicaSkupstineId + ", datumOdrzavanja=" + datumOdrzavanja + ", brojPrisutnih=" + brojPrisutnih + ", dnevniRed=" + dnevniRed + ", stambenaZajednica=" + stambenaZajednica + ", vlasnici=" + vlasnici + '}';
+    }
+    
 
 
 }
