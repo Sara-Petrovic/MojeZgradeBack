@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import rs.fon.silab.njt.mojezgradespringboot.exception.ResourceNotFoundException;
-import rs.fon.silab.njt.mojezgradespringboot.model.StambenaZajednica;
+import rs.fon.silab.njt.mojezgradespringboot.exception.UnauthorizedException;
 import rs.fon.silab.njt.mojezgradespringboot.model.VlasnikPosebnogDela;
 import rs.fon.silab.njt.mojezgradespringboot.service.SednicaSkupstineService;
 import rs.fon.silab.njt.mojezgradespringboot.service.VlasnikPosebnogDelaService;
@@ -41,9 +41,9 @@ public class VlasnikPosebnogDelaController {
         return service.save(vlasnik);
     }
 
-    @GetMapping("/vlasnikposebnogdela/{userid}")
-    public List<VlasnikPosebnogDela> getAllVlasnikPosebnogDela(@PathVariable(value = "userid") Long userId) {
-        return service.findAll(userId);
+    @GetMapping("/vlasnikposebnogdela/all/{userid}/{loginToken}")
+    public List<VlasnikPosebnogDela> getAllVlasnikPosebnogDela(@PathVariable(value = "userid") Long userId, @PathVariable(value = "loginToken") String loginToken) throws UnauthorizedException {
+        return service.findAll(userId, loginToken);
     }
 
     @GetMapping("/findvlasnikbyid/{id}")
@@ -54,22 +54,17 @@ public class VlasnikPosebnogDelaController {
         return ResponseEntity.ok().body(v);
     }
 
-    @GetMapping("/findvlasnikbyprezime/{prezime}/{userid}")
-    public List<VlasnikPosebnogDela> getVlasnikPosebnogDelaByPrezime(@PathVariable(value = "prezime") String prezimeVlasnika,
-            @PathVariable(value = "userid") Long userId)
-            throws ResourceNotFoundException {
-        List<VlasnikPosebnogDela> vlasnici = service.findByPrezime(prezimeVlasnika, userId);
-        //        .orElseThrow(() -> new ResourceNotFoundException("Ne postoji vlasnik sa ovim imenom i prezimenom :: " + imePrezimeVlasnika));
-        //return ResponseEntity.ok().body(vlasnici);
+    @GetMapping("/findvlasnikbyprezime/{prezime}/user/{userid}/{loginToken}")
+    public List<VlasnikPosebnogDela> getVlasnikPosebnogDelaByPrezime(@PathVariable(value = "userid") Long userId, @PathVariable(value = "loginToken") String loginToken, @PathVariable(value = "prezime") String prezimeVlasnika)
+            throws ResourceNotFoundException, UnauthorizedException {
+        List<VlasnikPosebnogDela> vlasnici = service.findByPrezime(prezimeVlasnika, userId, loginToken);
         return vlasnici;
     }
 
-    @GetMapping("/findvlasnikbystambenazajednica/{id}")
-    public List<VlasnikPosebnogDela> getVlasnikPosebnogDelaByPrezime(@PathVariable(value = "id") Long szId)
-            throws ResourceNotFoundException {
-        List<VlasnikPosebnogDela> vlasnici = service.findByStambenaZajednica(szId);
-        //        .orElseThrow(() -> new ResourceNotFoundException("Ne postoji vlasnik sa ovim imenom i prezimenom :: " + imePrezimeVlasnika));
-        //return ResponseEntity.ok().body(vlasnici);
+    @GetMapping("/findvlasnikbystambenazajednica/{id}/user/{userid}/{loginToken}")
+    public List<VlasnikPosebnogDela> getVlasnikPosebnogDelaByStambenaZajednica(@PathVariable(value = "id") Long szId, @PathVariable(value = "userid") Long userId, @PathVariable(value = "loginToken") String loginToken)
+            throws ResourceNotFoundException, UnauthorizedException {
+        List<VlasnikPosebnogDela> vlasnici = service.findByStambenaZajednica(szId, userId, loginToken);
         return vlasnici;
     }
 

@@ -1,5 +1,6 @@
 package rs.fon.silab.njt.mojezgradespringboot.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.CascadeType;
@@ -20,6 +21,7 @@ public class StavkaRacuna implements Serializable {
     private Usluga usluga;
     @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "racunId", insertable = false, updatable = false)
+    @JsonIgnore
     private Racun racun;
 
     public StavkaRacuna() {

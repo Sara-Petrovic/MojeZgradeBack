@@ -39,7 +39,7 @@ public class RacunController {
         if (!optVlasnik.isPresent()) {
             return new ResponseEntity("Vlasnika koga ste proseldili nije u bazi podataka.", HttpStatus.NOT_FOUND);
         }
-        Racun newRacun = new Racun(r.getRacunId(),
+        Racun newRacun = new Racun(1l,
                 0, r.getDatumIzdavanja(), r.getStatus(), optVlasnik.get(), r.getUpravnik());
         List<StavkaRacuna> stavke = r.getStavke();
         double ukupnaVrednost = 0;

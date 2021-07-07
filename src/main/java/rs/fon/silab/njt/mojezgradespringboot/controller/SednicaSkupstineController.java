@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import rs.fon.silab.njt.mojezgradespringboot.exception.ResourceNotFoundException;
+import rs.fon.silab.njt.mojezgradespringboot.exception.UnauthorizedException;
 import rs.fon.silab.njt.mojezgradespringboot.model.SednicaSkupstine;
 import rs.fon.silab.njt.mojezgradespringboot.service.SednicaSkupstineService;
 
@@ -26,9 +27,9 @@ public class SednicaSkupstineController {
         return service.save(sednica);
     }
     
-    @GetMapping("/sednice/{userid}")
-    public List<SednicaSkupstine> getAllSednicaSkupstine(@PathVariable(value = "userid") Long userId) {
-        return service.findAll(userId);
+    @GetMapping("/sednice/user/{userid}/{loginToken}")
+    public List<SednicaSkupstine> getAllSednicaSkupstine(@PathVariable(value = "userid") Long userId, @PathVariable(value = "loginToken") String loginToken) throws UnauthorizedException {
+        return service.findAll(userId, loginToken);
     }
 
     @GetMapping("/sednicaskupstine/{id}")
@@ -38,8 +39,11 @@ public class SednicaSkupstineController {
                 .orElseThrow(() -> new ResourceNotFoundException("Ne postoji sednica skupstine sa ovim id-jem :: " + sednicaId));
         return ResponseEntity.ok().body(s);
     }
-    @GetMapping("/findsednicabyulica/{ulica}/{userid}")
-    public List<SednicaSkupstine> getSednicaSkupstineByUlica(@PathVariable(value = "ulica") String ulica,@PathVariable(value = "userid") Long userId) {
-       return service.findByUlica(ulica, userId);
+    @GetMapping("/findsednicabyulica/{ulica}/user/{userid}/{loginToken}")
+    public List<SednicaSkupstine> getSednicaSkupstineByUlica(
+            @PathVariable(value = "ulica") String ulica,
+            @PathVariable(value = "userid") Long userId, 
+            @PathVariable(value = "loginToken") String loginToken) throws UnauthorizedException {
+       return service.findByUlica(ulica, userId, loginToken);
     }
 }
