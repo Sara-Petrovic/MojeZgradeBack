@@ -12,9 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import rs.fon.silab.njt.mojezgradespringboot.exception.ResourceNotFoundException;
 import rs.fon.silab.njt.mojezgradespringboot.model.SednicaSkupstine;
-import rs.fon.silab.njt.mojezgradespringboot.model.VlasnikPosebnogDela;
 import rs.fon.silab.njt.mojezgradespringboot.service.SednicaSkupstineService;
-import rs.fon.silab.njt.mojezgradespringboot.service.VlasnikPosebnogDelaService;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -24,6 +22,7 @@ public class SednicaSkupstineController {
 
     @PostMapping("/sednicaskupstine")
     public SednicaSkupstine saveSednicaSkupstine(@Valid @RequestBody SednicaSkupstine sednica) {
+        System.out.println(sednica);
         return service.save(sednica);
     }
     

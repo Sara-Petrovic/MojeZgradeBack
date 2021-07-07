@@ -157,4 +157,5 @@ public class StambenaZajednica implements Serializable {
     public void setUpravnik(User upravnik) {
         this.upravnik = upravnik;
     }
+    
 }

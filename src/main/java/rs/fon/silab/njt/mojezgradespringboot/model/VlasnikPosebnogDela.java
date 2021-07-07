@@ -5,22 +5,21 @@ import javax.persistence.Entity;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
 public class VlasnikPosebnogDela implements Serializable {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long vlasnikId;
     @NotNull
     @Size(min=3, message="Ime mora imati najmanje 3 karaktera.")
@@ -129,6 +128,8 @@ public class VlasnikPosebnogDela implements Serializable {
 
     @Override
     public String toString() {
-        return ime + " " + prezime;
+        return "VlasnikPosebnogDela{" + "vlasnikId=" + vlasnikId + ", ime=" + ime + ", prezime=" + prezime + ", brojPosebnogDela=" + brojPosebnogDela + ", velicinaPosebnogDela=" + velicinaPosebnogDela + ", mernaJedinica=" + mernaJedinica + ", kontaktVlasnika=" + kontaktVlasnika + ", stambenaZajednica=" + stambenaZajednica + '}';
     }
+
+  
 }
