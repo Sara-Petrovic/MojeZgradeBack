@@ -19,16 +19,16 @@ public class SednicaSkupstineService {
         return repo.save(sednica);
     }
 
-    public List<SednicaSkupstine> findAll() {
-        return repo.findAll();
+    public List<SednicaSkupstine> findAll(Long userId) {
+        return repo.findByStambenaZajednica_Upravnik_UserId(userId);
     }
 
     public Optional<SednicaSkupstine> findById(Long sednicaId) {
         return repo.findById(sednicaId);
     }
 
-    public List<SednicaSkupstine> findByUlica(String ulica) {
-        return repo.findByStambenaZajednica_UlicaContaining(ulica);
+    public List<SednicaSkupstine> findByUlica(String ulica, Long userId) {
+        return repo.findByStambenaZajednica_UlicaContainingAndStambenaZajednica_Upravnik_UserId(ulica, userId);
     }
 
 }

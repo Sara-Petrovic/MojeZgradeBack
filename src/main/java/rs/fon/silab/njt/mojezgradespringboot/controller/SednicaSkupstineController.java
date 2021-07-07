@@ -26,9 +26,9 @@ public class SednicaSkupstineController {
         return service.save(sednica);
     }
     
-    @GetMapping("/sednicaskupstine")
-    public List<SednicaSkupstine> getAllSednicaSkupstine() {
-        return service.findAll();
+    @GetMapping("/sednice/{userid}")
+    public List<SednicaSkupstine> getAllSednicaSkupstine(@PathVariable(value = "userid") Long userId) {
+        return service.findAll(userId);
     }
 
     @GetMapping("/sednicaskupstine/{id}")
@@ -38,8 +38,8 @@ public class SednicaSkupstineController {
                 .orElseThrow(() -> new ResourceNotFoundException("Ne postoji sednica skupstine sa ovim id-jem :: " + sednicaId));
         return ResponseEntity.ok().body(s);
     }
-    @GetMapping("/findsednicabyulica/{ulica}")
-    public List<SednicaSkupstine> getSednicaSkupstineByUlica(@PathVariable(value = "ulica") String ulica) {
-       return service.findByUlica(ulica);
+    @GetMapping("/findsednicabyulica/{ulica}/{userid}")
+    public List<SednicaSkupstine> getSednicaSkupstineByUlica(@PathVariable(value = "ulica") String ulica,@PathVariable(value = "userid") Long userId) {
+       return service.findByUlica(ulica, userId);
     }
 }
