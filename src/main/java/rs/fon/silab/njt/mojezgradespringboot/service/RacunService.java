@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import rs.fon.silab.njt.mojezgradespringboot.exception.UnauthorizedException;
 import rs.fon.silab.njt.mojezgradespringboot.model.Racun;
 import rs.fon.silab.njt.mojezgradespringboot.model.Status;
 import rs.fon.silab.njt.mojezgradespringboot.model.StavkaRacuna;
@@ -12,8 +13,6 @@ import rs.fon.silab.njt.mojezgradespringboot.model.User;
 import rs.fon.silab.njt.mojezgradespringboot.model.VlasnikPosebnogDela;
 import rs.fon.silab.njt.mojezgradespringboot.repository.RacunRepository;
 import rs.fon.silab.njt.mojezgradespringboot.repository.StavkaRacunaRepository;
-import rs.fon.silab.njt.mojezgradespringboot.repository.UserRepository;
-import rs.fon.silab.njt.mojezgradespringboot.repository.VlasnikPosebnogDelaRepository;
 
 @Service
 @Transactional
@@ -23,8 +22,8 @@ public class RacunService {
     private RacunRepository repo;
     @Autowired
     private StavkaRacunaRepository stavkeRacnaRepo;
-    @Autowired 
-    private UserRepository userRepo;
+    @Autowired
+    private RegistrationService userService;
 
     public Racun save(Racun r, List<StavkaRacuna> stavke) {
         Racun saved = repo.save(r);
@@ -47,18 +46,27 @@ public class RacunService {
         return optRacun.get();
     }
 
-    public List<Racun> findAll(Long userId) {
-        User user = userRepo.getById(userId);
+    public List<Racun> findAll(Long userId, String loginToken) throws UnauthorizedException {
+        User user = userService.isLoggedIn(userId, loginToken);
+        if (user == null) {
+            throw new UnauthorizedException("Korinik nije ulogovan.");
+        }
         return repo.findAllByUpravnik(user);
     }
 
-    public List<Racun> findByStatus(Long userId, Status statusEnum) {
-        User user = userRepo.getById(userId);
+    public List<Racun> findByStatus(Long userId, String loginToken, Status statusEnum) throws UnauthorizedException {
+        User user = userService.isLoggedIn(userId, loginToken);
+        if (user == null) {
+            throw new UnauthorizedException("Korinik nije ulogovan.");
+        }
         return repo.findByStatusAndUpravnik(statusEnum, user);
     }
 
-    public List<Racun> findByVlasnik(Long userId, VlasnikPosebnogDela vlasnik) {
-        User user = userRepo.getById(userId);
+    public List<Racun> findByVlasnik(Long userId, String loginToken, VlasnikPosebnogDela vlasnik) throws UnauthorizedException {
+        User user = userService.isLoggedIn(userId, loginToken);
+        if (user == null) {
+            throw new UnauthorizedException("Korinik nije ulogovan.");
+        }
         return repo.findByVlasnikPosebnogDelaAndUpravnik(vlasnik, user);
     }
 
@@ -67,7 +75,7 @@ public class RacunService {
     }
 
     public List<StavkaRacuna> getStavkeRacuna(Racun racun) {
-       Optional<Racun> optRacun = repo.findById(racun.getRacunId());
+        Optional<Racun> optRacun = repo.findById(racun.getRacunId());
         if (!optRacun.isPresent()) {
             return null;
         }

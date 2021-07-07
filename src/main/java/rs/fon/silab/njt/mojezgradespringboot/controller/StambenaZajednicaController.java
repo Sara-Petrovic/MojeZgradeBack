@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import rs.fon.silab.njt.mojezgradespringboot.exception.ResourceNotFoundException;
+import rs.fon.silab.njt.mojezgradespringboot.exception.UnauthorizedException;
 import rs.fon.silab.njt.mojezgradespringboot.model.StambenaZajednica;
 import rs.fon.silab.njt.mojezgradespringboot.service.StambenaZajednicaService;
 
@@ -40,10 +41,10 @@ public class StambenaZajednicaController {
     public List<StambenaZajednica> getAllStambenaZajednica() {
         return service.getAll();
     }
-    
-    @GetMapping("/stambenazajednica/all/{userId}")
-    public List<StambenaZajednica> getAllStambenaZajednica(@PathVariable(value = "userId") Long userId) {
-        return service.getAll(userId);
+
+    @GetMapping("/stambenazajednica/all/{userId}/{loginToken}")
+    public List<StambenaZajednica> getAllStambenaZajednica(@PathVariable(value = "userId") Long userId, @PathVariable(value = "loginToken") String loginToken) throws UnauthorizedException {
+        return service.getAll(userId, loginToken);
     }
 
     @GetMapping("/stambenazajednica/{id}")
@@ -54,36 +55,35 @@ public class StambenaZajednicaController {
         }
         return ResponseEntity.ok().body(sz);
     }
-    
-    @GetMapping("/stambenazajednica/user/{userId}/searchbypib")
-    public List<StambenaZajednica> findStambenaZajednicaByPib(@PathVariable(value = "userId") Long userId, @RequestParam String pib) {
-        if(pib.length() != 9){
+
+    @GetMapping("/stambenazajednica/user/{userId}/{loginToken}/searchbypib")
+    public List<StambenaZajednica> findStambenaZajednicaByPib(@PathVariable(value = "userId") Long userId, @PathVariable(value = "loginToken") String loginToken, @RequestParam String pib) throws UnauthorizedException {
+        if (pib.length() != 9) {
             return new ArrayList<>();
         }
-        
-        List<StambenaZajednica> sz = service.findByPib(userId, pib);
+
+        List<StambenaZajednica> sz = service.findByPib(userId, loginToken, pib);
         return sz;
     }
-    
-    @GetMapping("/stambenazajednica/user/{userId}/searchbymaticnibroj")
-    public List<StambenaZajednica> findStambenaZajednicaByMaticniBroj(@PathVariable(value = "userId") Long userId, @RequestParam String maticni_broj) {
-        if(maticni_broj.length() != 8){
+
+    @GetMapping("/stambenazajednica/user/{userId}/{loginToken}/searchbymaticnibroj")
+    public List<StambenaZajednica> findStambenaZajednicaByMaticniBroj(@PathVariable(value = "userId") Long userId, @PathVariable(value = "loginToken") String loginToken, @RequestParam String maticni_broj) throws UnauthorizedException {
+        if (maticni_broj.length() != 8) {
             return new ArrayList<>();
         }
-        List<StambenaZajednica> sz = service.findByMaticniBroj(userId, maticni_broj);
+        List<StambenaZajednica> sz = service.findByMaticniBroj(userId, loginToken, maticni_broj);
         return sz;
     }
-    
-    @GetMapping("/stambenazajednica/user/{userId}/searchbyulicabroj")
-    public List<StambenaZajednica> findStambenaZajednicaByUlicaIBroj(@PathVariable(value = "userId") Long userId, @RequestParam String ulica, @RequestParam String broj) {
-        if(broj == null || "".equals(broj) || " ".equals(broj)){
-            List<StambenaZajednica> sz = service.findByUlica(userId, ulica);
-        return sz;
+
+    @GetMapping("/stambenazajednica/user/{userId}/{loginToken}/searchbyulicabroj")
+    public List<StambenaZajednica> findStambenaZajednicaByUlicaIBroj(@PathVariable(value = "userId") Long userId, @PathVariable(value = "loginToken") String loginToken, @RequestParam String ulica, @RequestParam String broj) throws UnauthorizedException {
+        if (broj == null || "".equals(broj) || " ".equals(broj)) {
+            return service.findByUlica(userId, loginToken, ulica);
         }
-        List<StambenaZajednica> sz = service.findByUlicaIBroj(userId, ulica, broj);
+        List<StambenaZajednica> sz = service.findByUlicaIBroj(userId, loginToken, ulica, broj);
         return sz;
     }
-  
+
     @PutMapping("/stambenazajednica/{id}")
     public ResponseEntity<StambenaZajednica> updateStambenaZajednica(@PathVariable(value = "id") Long id, @RequestBody StambenaZajednica szDetails) throws Exception {
         StambenaZajednica sz = service.find(id);

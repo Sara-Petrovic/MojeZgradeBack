@@ -1,5 +1,6 @@
 package rs.fon.silab.njt.mojezgradespringboot.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.sql.Timestamp;
 import java.time.Instant;
 
@@ -7,6 +8,7 @@ public class Login {
     
     User user;
     String token;
+    @JsonIgnore
     Timestamp timestamp;
 
     public Login() {

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import rs.fon.silab.njt.mojezgradespringboot.model.Login;
 import rs.fon.silab.njt.mojezgradespringboot.model.User;
 import rs.fon.silab.njt.mojezgradespringboot.service.RegistrationService;
 
@@ -43,8 +44,8 @@ public class RegistrationController {
         if (userObj == null) {
             throw new Exception("Neuspesan login. Proverite email i/ili lozinku.");
         }
-        userObj = service.logUserIn(userObj);
-        return ResponseEntity.ok().body(new User(userObj.getUserId(), userObj.getEmail(), "", userObj.getFirstName(), userObj.getLastName()));
+        Login login = service.logUserIn(userObj);
+        return ResponseEntity.ok().body(login);
     }
 
     @PostMapping("/logout")

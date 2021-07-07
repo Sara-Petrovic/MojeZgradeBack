@@ -16,7 +16,7 @@ public class RegistrationService {
     @Autowired
     private UserRepository repo;
     
-    private Map<Long, Login> loggedIn = new HashMap<>();
+    private final Map<Long, Login> loggedIn = new HashMap<>();
     
     public User saveUser(User user){
         return repo.save(user);
@@ -30,14 +30,15 @@ public class RegistrationService {
         return repo.findByEmailAndPassword(email,password);
     }
 
-    public User logUserIn(User userObj) throws Exception {
+    public Login logUserIn(User userObj) throws Exception {
         if(loggedIn.get(userObj.getUserId()) != null){
             throw new Exception("Ovaj korisnik sa je vec ulogovan: " + userObj.getEmail());
         }
         String token = generateLoginToken();
-        loggedIn.put(userObj.getUserId(), new Login(userObj, token));
+        Login login = new Login(userObj, token);
+        loggedIn.put(userObj.getUserId(), login);
         System.err.println("\n\n\n" + userObj.getUserId() + "\n\n\n"+ token + "\n\n\n");
-        return userObj;
+        return login;
     }
 
     private String generateLoginToken() {
@@ -51,5 +52,16 @@ public class RegistrationService {
         Login ret = loggedIn.remove(user.getUserId());
         System.err.println("\n\n" + loggedIn.size() + "\n\n");
         return ret != null;
+    }
+
+    public User isLoggedIn(Long userID, String loginToken) {
+        Login login = loggedIn.get(userID);
+        if(login == null) {
+            return null;
+        }
+        if(login.getToken().equals(loginToken)){
+            return login.getUser();
+        }
+        return null;
     }
 }
