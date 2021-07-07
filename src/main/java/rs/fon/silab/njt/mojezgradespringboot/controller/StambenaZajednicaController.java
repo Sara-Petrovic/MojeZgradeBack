@@ -40,6 +40,11 @@ public class StambenaZajednicaController {
     public List<StambenaZajednica> getAllStambenaZajednica() {
         return service.getAll();
     }
+    
+    @GetMapping("/stambenazajednica/all/{userId}")
+    public List<StambenaZajednica> getAllStambenaZajednica(@PathVariable(value = "userId") Long userId) {
+        return service.getAll(userId);
+    }
 
     @GetMapping("/stambenazajednica/{id}")
     public ResponseEntity<StambenaZajednica> findStambenaZajednica(@PathVariable(value = "id") Long id) throws ResourceNotFoundException {
@@ -50,31 +55,32 @@ public class StambenaZajednicaController {
         return ResponseEntity.ok().body(sz);
     }
     
-    @GetMapping("/stambenazajednica/searchbypib")
-    public List<StambenaZajednica> findStambenaZajednicaByPib(@RequestParam String pib) {
+    @GetMapping("/stambenazajednica/user/{userId}/searchbypib")
+    public List<StambenaZajednica> findStambenaZajednicaByPib(@PathVariable(value = "userId") Long userId, @RequestParam String pib) {
         if(pib.length() != 9){
             return new ArrayList<>();
         }
-        List<StambenaZajednica> sz = service.findByPib(pib);
+        
+        List<StambenaZajednica> sz = service.findByPib(userId, pib);
         return sz;
     }
     
-    @GetMapping("/stambenazajednica/searchbymaticnibroj")
-    public List<StambenaZajednica> findStambenaZajednicaByMaticniBroj(@RequestParam String maticni_broj) {
+    @GetMapping("/stambenazajednica/user/{userId}/searchbymaticnibroj")
+    public List<StambenaZajednica> findStambenaZajednicaByMaticniBroj(@PathVariable(value = "userId") Long userId, @RequestParam String maticni_broj) {
         if(maticni_broj.length() != 8){
             return new ArrayList<>();
         }
-        List<StambenaZajednica> sz = service.findByMaticniBroj(maticni_broj);
+        List<StambenaZajednica> sz = service.findByMaticniBroj(userId, maticni_broj);
         return sz;
     }
     
-    @GetMapping("/stambenazajednica/searchbyulicabroj")
-    public List<StambenaZajednica> findStambenaZajednicaByUlicaIBroj(@RequestParam String ulica, @RequestParam String broj) {
+    @GetMapping("/stambenazajednica/user/{userId}/searchbyulicabroj")
+    public List<StambenaZajednica> findStambenaZajednicaByUlicaIBroj(@PathVariable(value = "userId") Long userId, @RequestParam String ulica, @RequestParam String broj) {
         if(broj == null || "".equals(broj) || " ".equals(broj)){
-            List<StambenaZajednica> sz = service.findByUlica(ulica);
+            List<StambenaZajednica> sz = service.findByUlica(userId, ulica);
         return sz;
         }
-        List<StambenaZajednica> sz = service.findByUlicaIBroj(ulica, broj);
+        List<StambenaZajednica> sz = service.findByUlicaIBroj(userId, ulica, broj);
         return sz;
     }
   
