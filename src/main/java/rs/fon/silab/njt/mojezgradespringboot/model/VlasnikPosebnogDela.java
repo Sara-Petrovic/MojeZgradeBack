@@ -1,6 +1,8 @@
 package rs.fon.silab.njt.mojezgradespringboot.model;
 
 import java.io.Serializable;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 
 import javax.persistence.EnumType;
@@ -15,6 +17,7 @@ import javax.validation.constraints.Size;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 
 @Entity
 public class VlasnikPosebnogDela implements Serializable {
@@ -39,7 +42,10 @@ public class VlasnikPosebnogDela implements Serializable {
     @ManyToOne
     @JoinColumn(name = "stambenaZajednicaId")
     private StambenaZajednica stambenaZajednica;
-
+    
+    @ManyToMany(targetEntity = SednicaSkupstine.class)
+    private List<SednicaSkupstine> sednice; //set je efikasniji od liste kod manyToMany asocijacije
+    
     public VlasnikPosebnogDela() {
     }
 

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import rs.fon.silab.njt.mojezgradespringboot.model.SednicaSkupstine;
+import rs.fon.silab.njt.mojezgradespringboot.model.VlasnikPosebnogDela;
 import rs.fon.silab.njt.mojezgradespringboot.repository.SednicaSkupstineRepository;
 
 @Service
@@ -29,6 +30,9 @@ public class SednicaSkupstineService {
 
     public List<SednicaSkupstine> findByUlica(String ulica, Long userId) {
         return repo.findByStambenaZajednica_UlicaContainingAndStambenaZajednica_Upravnik_UserId(ulica, userId);
+    }
+    public void deleteVlasnikFromSednice(VlasnikPosebnogDela vlasnik){
+       // repo.
     }
 
 }

@@ -11,5 +11,7 @@ public interface SednicaSkupstineRepository extends JpaRepository<SednicaSkupsti
     List<SednicaSkupstine> findByStambenaZajednica_UlicaContainingAndStambenaZajednica_Upravnik_UserId(final String ulica, Long userId);
 
     List<SednicaSkupstine> findByStambenaZajednica_Upravnik_UserId( Long userId);
+    
+    
 
 }

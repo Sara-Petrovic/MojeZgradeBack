@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import rs.fon.silab.njt.mojezgradespringboot.exception.ResourceNotFoundException;
 import rs.fon.silab.njt.mojezgradespringboot.model.StambenaZajednica;
 import rs.fon.silab.njt.mojezgradespringboot.model.VlasnikPosebnogDela;
+import rs.fon.silab.njt.mojezgradespringboot.service.SednicaSkupstineService;
 import rs.fon.silab.njt.mojezgradespringboot.service.VlasnikPosebnogDelaService;
 
 @RestController
@@ -25,6 +26,9 @@ public class VlasnikPosebnogDelaController {
 
     @Autowired
     private VlasnikPosebnogDelaService service;
+    
+    @Autowired
+   private SednicaSkupstineService sednicaSkupstineService;
 
     @PostMapping("/vlasnikposebnogdela")
     public VlasnikPosebnogDela saveVlasnikPosebnogDela(@Valid @RequestBody VlasnikPosebnogDela vlasnik) throws Exception {
@@ -92,6 +96,8 @@ public class VlasnikPosebnogDelaController {
         VlasnikPosebnogDela vlasnik = service.findById(vlasnikId)
                 .orElseThrow(() -> new ResourceNotFoundException("Ne postoji vlasnik sa ovim id-jem :: " + vlasnikId));
 
+        sednicaSkupstineService.deleteVlasnikFromSednice(vlasnik);
+        
         service.delete(vlasnik);
         Map<String, Boolean> response = new HashMap<>();
         response.put("deleted", Boolean.TRUE);
