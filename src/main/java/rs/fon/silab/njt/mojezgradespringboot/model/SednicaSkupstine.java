@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 
@@ -27,7 +28,7 @@ public class SednicaSkupstine implements Serializable {
     @JoinColumn(name = "stambenaZajednicaId")
     private StambenaZajednica stambenaZajednica;
 
-    @ManyToMany(targetEntity = VlasnikPosebnogDela.class, cascade = CascadeType.REMOVE)
+    @ManyToMany(targetEntity = VlasnikPosebnogDela.class)
     private List<VlasnikPosebnogDela> vlasnici; //set je efikasniji od liste kod manyToMany asocijacije
 
     public SednicaSkupstine() {

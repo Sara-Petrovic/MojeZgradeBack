@@ -17,6 +17,7 @@ import javax.validation.constraints.Size;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
 @Entity
@@ -43,7 +44,7 @@ public class VlasnikPosebnogDela implements Serializable {
     @JoinColumn(name = "stambenaZajednicaId")
     private StambenaZajednica stambenaZajednica;
     
-    @ManyToMany(targetEntity = SednicaSkupstine.class)
+    @ManyToMany(targetEntity = SednicaSkupstine.class, cascade = CascadeType.ALL, mappedBy = "vlasnici")
     private List<SednicaSkupstine> sednice; //set je efikasniji od liste kod manyToMany asocijacije
     
     public VlasnikPosebnogDela() {
