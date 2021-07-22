@@ -22,34 +22,35 @@ import javax.persistence.ManyToMany;
 
 @Entity
 public class VlasnikPosebnogDela implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long vlasnikId;
     //@Size(min=3, message="Ime mora imati najmanje 3 karaktera.")
     private String ime;
-    
+
     //@Size(min=3, message="Prezime mora imati najmanje 3 karaktera.")
     private String prezime;
-    
+
     private String brojPosebnogDela;
-    
+
     private double velicinaPosebnogDela;
-    
+
     @Enumerated(EnumType.STRING)
     private JedinicaMere mernaJedinica;
-    
+
     private String kontaktVlasnika;
-    
+
     @ManyToOne
     @JoinColumn(name = "stambenaZajednicaId")
     private StambenaZajednica stambenaZajednica;
-    
-    @ManyToMany(targetEntity = SednicaSkupstine.class, cascade = CascadeType.ALL, mappedBy = "vlasnici")
+
+    @ManyToMany(targetEntity = SednicaSkupstine.class, cascade = CascadeType.ALL,
+            mappedBy = "vlasnici")
     private List<SednicaSkupstine> sednice; //set je efikasniji od liste kod manyToMany asocijacije
-    
+
     public VlasnikPosebnogDela() {
     }
-
 
     public VlasnikPosebnogDela(Long vlasnikId, String ime, String prezime,
             String brojPosebnogDela, double velicinaPosebnogDela,
@@ -134,5 +135,4 @@ public class VlasnikPosebnogDela implements Serializable {
         return "VlasnikPosebnogDela{" + "vlasnikId=" + vlasnikId + ", ime=" + ime + ", prezime=" + prezime + ", brojPosebnogDela=" + brojPosebnogDela + ", velicinaPosebnogDela=" + velicinaPosebnogDela + ", mernaJedinica=" + mernaJedinica + ", kontaktVlasnika=" + kontaktVlasnika + ", stambenaZajednica=" + stambenaZajednica + '}';
     }
 
-  
 }

@@ -26,9 +26,9 @@ public class VlasnikPosebnogDelaController {
 
     @Autowired
     private VlasnikPosebnogDelaService service;
-    
+
     @Autowired
-   private SednicaSkupstineService sednicaSkupstineService;
+    private SednicaSkupstineService sednicaSkupstineService;
 
     @PostMapping("/vlasnikposebnogdela")
     public VlasnikPosebnogDela saveVlasnikPosebnogDela(@Valid @RequestBody VlasnikPosebnogDela vlasnik) throws Exception {
@@ -91,8 +91,11 @@ public class VlasnikPosebnogDelaController {
         VlasnikPosebnogDela vlasnik = service.findById(vlasnikId)
                 .orElseThrow(() -> new ResourceNotFoundException("Ne postoji vlasnik sa ovim id-jem :: " + vlasnikId));
 
-        sednicaSkupstineService.deleteVlasnikFromSednice(vlasnik);
-        
+//        vlasnik.getSednice().forEach(sednica -> {
+//            sednica.getVlasnici().remove(vlasnik);
+//            service.save(vlasnik);
+//        });
+
         service.delete(vlasnik);
         Map<String, Boolean> response = new HashMap<>();
         response.put("deleted", Boolean.TRUE);

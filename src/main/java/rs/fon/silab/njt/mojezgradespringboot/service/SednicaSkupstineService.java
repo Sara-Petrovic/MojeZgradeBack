@@ -44,8 +44,4 @@ public class SednicaSkupstineService {
         return repo.findByStambenaZajednica_UlicaContainingAndStambenaZajednica_Upravnik_UserId(ulica, user.getUserId());
     }
 
-    public void deleteVlasnikFromSednice(VlasnikPosebnogDela vlasnik) {
-        // repo.
-    }
-
 }

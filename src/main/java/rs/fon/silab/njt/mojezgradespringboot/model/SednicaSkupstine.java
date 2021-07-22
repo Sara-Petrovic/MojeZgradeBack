@@ -1,3 +1,4 @@
+
 package rs.fon.silab.njt.mojezgradespringboot.model;
 
 import java.io.Serializable;
@@ -104,3 +105,4 @@ public class SednicaSkupstine implements Serializable {
     }
 
 }
+
