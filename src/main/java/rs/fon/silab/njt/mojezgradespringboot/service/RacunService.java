@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import rs.fon.silab.njt.mojezgradespringboot.dto.RacunDto;
 import rs.fon.silab.njt.mojezgradespringboot.exception.UnauthorizedException;
 import rs.fon.silab.njt.mojezgradespringboot.model.Racun;
 import rs.fon.silab.njt.mojezgradespringboot.model.Status;
@@ -81,5 +82,14 @@ public class RacunService {
         }
         Racun r = optRacun.get();
         return stavkeRacnaRepo.findAllByRacun(r);
+    }
+
+    public Racun update(Racun r, List<StavkaRacuna> stavke) {
+        Racun saved = repo.save(r);
+        for (StavkaRacuna stavka : stavke) {
+            stavka.setRacun(saved);
+        }
+        stavkeRacnaRepo.saveAll(stavke);
+        return saved;
     }
 }
