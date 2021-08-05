@@ -5,7 +5,6 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import rs.fon.silab.njt.mojezgradespringboot.dto.RacunDto;
 import rs.fon.silab.njt.mojezgradespringboot.exception.UnauthorizedException;
 import rs.fon.silab.njt.mojezgradespringboot.model.Racun;
 import rs.fon.silab.njt.mojezgradespringboot.model.Status;
@@ -90,6 +89,14 @@ public class RacunService {
             stavka.setRacun(saved);
         }
         stavkeRacnaRepo.saveAll(stavke);
+        
+//        if(stareStavke.size() > stavke.size()){
+//            int razlika = stareStavke.size() - stavke.size();
+//            List<StavkaRacuna> zaBrisanje = stareStavke.subList(stareStavke.size() - razlika, stareStavke.size());
+//            stavkeRacnaRepo.deleteAll(zaBrisanje);
+//        }
+//        
+        
         return saved;
     }
 }
