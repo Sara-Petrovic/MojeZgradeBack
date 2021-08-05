@@ -4,5 +4,8 @@ import java.io.Serializable;
 
 public enum Status implements Serializable{
     PLACEN,
-    NEPLACEN
+    @Deprecated
+    NEPLACEN,
+    KREIRAN,
+    POSLAT
 }
