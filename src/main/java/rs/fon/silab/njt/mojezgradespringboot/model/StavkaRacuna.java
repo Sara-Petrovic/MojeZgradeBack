@@ -19,7 +19,7 @@ public class StavkaRacuna implements Serializable {
     @ManyToOne
     @JoinColumn(name = "uslugaId")
     private Usluga usluga;
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "racunId", insertable = false, updatable = false)
     @JsonIgnore
     private Racun racun;

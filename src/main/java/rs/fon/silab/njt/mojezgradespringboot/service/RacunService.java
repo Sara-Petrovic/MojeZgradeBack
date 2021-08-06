@@ -90,12 +90,18 @@ public class RacunService {
         }
         stavkeRacnaRepo.saveAll(stavke);
         
-//        if(stareStavke.size() > stavke.size()){
-//            int razlika = stareStavke.size() - stavke.size();
-//            List<StavkaRacuna> zaBrisanje = stareStavke.subList(stareStavke.size() - razlika, stareStavke.size());
+        //**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**
+        List<StavkaRacuna> stareStavke = stavkeRacnaRepo.findAllByRacun(r);
+        
+        if(stareStavke.size() > stavke.size()){
+            int razlika = stareStavke.size() - stavke.size();
+            List<StavkaRacuna> zaBrisanje = stareStavke.subList(stareStavke.size() - razlika, stareStavke.size());
 //            stavkeRacnaRepo.deleteAll(zaBrisanje);
-//        }
-//        
+            for(StavkaRacuna s : zaBrisanje){
+                stavkeRacnaRepo.delete(s);
+            }
+        }
+        //**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**//**
         
         return saved;
     }
