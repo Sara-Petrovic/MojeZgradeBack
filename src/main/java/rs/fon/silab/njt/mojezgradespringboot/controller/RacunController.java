@@ -1,5 +1,6 @@
 package rs.fon.silab.njt.mojezgradespringboot.controller;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -7,19 +8,24 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import javax.mail.MessagingException;
+import javax.mail.internet.AddressException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import rs.fon.silab.njt.mojezgradespringboot.dto.RacunDto;
+import rs.fon.silab.njt.mojezgradespringboot.exception.ResourceNotFoundException;
 import rs.fon.silab.njt.mojezgradespringboot.exception.UnauthorizedException;
 import rs.fon.silab.njt.mojezgradespringboot.model.Racun;
 import rs.fon.silab.njt.mojezgradespringboot.model.Status;
@@ -71,7 +77,7 @@ public class RacunController {
             try {
                 Field field = Status.class.getField(value.toString());
                 return !field.isAnnotationPresent(Deprecated.class);
-            } catch (Exception e) {
+            } catch (NoSuchFieldException | SecurityException e) {
                 return false;
             }
         }).collect(Collectors.toList());
@@ -81,7 +87,7 @@ public class RacunController {
     public ResponseEntity<?> findRacun(@PathVariable Long id) {
         Racun r = service.find(id);
         if (r == null) {
-            return new ResponseEntity<>("Racun sa ovim id nije pronadjen.", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Ne postoji racun sa id-jem:: " + id, HttpStatus.NOT_FOUND);
         }
         List<StavkaRacuna> stavke = service.getStavkeRacuna(r);
         return ResponseEntity.ok().body(new RacunDto(r.getRacunId(),
@@ -106,20 +112,13 @@ public class RacunController {
         return ResponseEntity.ok().body(r);
     }
 
-    // promeni ////////////////////////////////////////////////////////////////////////////////////////////////
     @PutMapping("/racun/{id}")
     public ResponseEntity<?> updateRacun(@PathVariable Long id, @RequestBody RacunDto racun) throws Exception {
-        //koristim metodu koju sa ec naoisala da nadjem racun i sve njegove stavke
-        ResponseEntity respose = findRacun(id);
-        //ako racun ne postoji bacam exception - treba da promenim da ima neku informativnu poruku
-        if (respose.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
-            throw new Exception();
-        }
-        //ako je pronasao "otpakujem" racunDto
-        RacunDto racunPreUpdejta = (RacunDto) respose.getBody();
-        //proveravam jos jednom da li mi je nasao racun i se njegove stavke - i ovde treba da dam informativniji exception
+
+        Racun racunPreUpdejta = service.find(id);
+
         if (racunPreUpdejta == null) {
-            throw new Exception();
+            throw new Exception("Ne postoji racun sa id-jem:: " + id);
         }
         //proveravam da li je prosledjen novi vlasnik i ako jeste, da li postoji u bazi
         if (!Objects.equals(racun.getVlasnikPosebnogDela().getVlasnikId(), racunPreUpdejta.getVlasnikPosebnogDela().getVlasnikId())) {
@@ -155,61 +154,60 @@ public class RacunController {
                 updatedRacun.getStatus(), updatedRacun.getVlasnikPosebnogDela(), updatedRacun.getUpravnik(), racun.getStavke()));
 
     }
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    @PutMapping("/racun/sent/{id}")
-    public ResponseEntity<?> racunIsSent(@PathVariable Long id) throws Exception {
-        ResponseEntity respose = findRacun(id);
-        //ako racun ne postoji bacam exception - treba da promenim da ima neku informativnu poruku
-        if (respose.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
-            throw new Exception();
+    // promeni ////////////////////////////////////////////////////////////////////////////////////////////////
+    @PostMapping(value = "/racun/{id}/send")
+    public String sendRacun(@PathVariable Long id, @ModelAttribute MultipartFile uplatnica)
+            throws MessagingException, AddressException, IOException, ResourceNotFoundException, Exception {
+
+        Racun racun = service.find(id);
+
+        if (racun == null) {
+            throw new Exception("Ne postoji racun sa id-jem:: " + id);
         }
-        //ako je pronasao "otpakujem" racunDto
-        RacunDto racunPreUpdejta = (RacunDto) respose.getBody();
-        //proveravam jos jednom da li mi je nasao racun i se njegove stavke - i ovde treba da dam informativniji exception
-        if (racunPreUpdejta == null) {
-            throw new Exception();
+        if (racun.getStatus().equals(Status.PLACEN)) {
+            throw new Exception("Racun je vec placen.");
         }
-        
-        switch (racunPreUpdejta.getStatus()) {
-            case PLACEN:
-                return new ResponseEntity<>("Racun ne može da se posalje nakon što je placen.", HttpStatus.FORBIDDEN);
-            case POSLAT:
-                return new ResponseEntity<>("Racun ne može da se posalje nakon što je vec poslat.", HttpStatus.FORBIDDEN);
-        }
-        
-        return ResponseEntity.ok().body(service.save(new Racun(racunPreUpdejta.getRacunId(), racunPreUpdejta.getUkupnaVrednost(), racunPreUpdejta.getDatumIzdavanja(), Status.POSLAT, racunPreUpdejta.getVlasnikPosebnogDela(), racunPreUpdejta.getUpravnik())));
+
+        service.sendRacunViaEmail(id, uplatnica);
+        Racun result = racunIsSent(racun);
+
+        //promeni povratnu vrednost
+        return "Success";
     }
-    
+
+    private Racun racunIsSent(Racun racun) throws Exception {
+        switch (racun.getStatus()) {
+            case PLACEN:
+                throw new Exception("Racun ne može da se posalje nakon što je vec placen.");
+        }
+        racun.setStatus(Status.POSLAT);
+        return service.save(racun);
+    }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     @PutMapping("/racun/paid/{id}")
     public ResponseEntity<?> racunIsPaid(@PathVariable Long id) throws Exception {
-        ResponseEntity respose = findRacun(id);
-        //ako racun ne postoji bacam exception - treba da promenim da ima neku informativnu poruku
-        if (respose.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
-            throw new Exception();
-        }
-        //ako je pronasao "otpakujem" racunDto
-        RacunDto racunPreUpdejta = (RacunDto) respose.getBody();
-        //proveravam jos jednom da li mi je nasao racun i se njegove stavke - i ovde treba da dam informativniji exception
-        if (racunPreUpdejta == null) {
-            throw new Exception();
-        }
+      
         
-        switch (racunPreUpdejta.getStatus()) {
-            case PLACEN:
-                return new ResponseEntity<>("Racun ne može da se plati nakon što je vec placen.", HttpStatus.FORBIDDEN);
-            }
+        Racun racun = service.find(id);
         
-        return ResponseEntity.ok().body(service.save(new Racun(racunPreUpdejta.getRacunId(), racunPreUpdejta.getUkupnaVrednost(), racunPreUpdejta.getDatumIzdavanja(), Status.PLACEN, racunPreUpdejta.getVlasnikPosebnogDela(), racunPreUpdejta.getUpravnik())));
+        if (racun == null) {
+            return new ResponseEntity<>("Ne postoji racun sa id-jem:: " + id, HttpStatus.NOT_FOUND);
+        }
+
+        racun.setStatus(Status.PLACEN);
+        return ResponseEntity.ok().body(service.save(racun));
     }
 
     @DeleteMapping("/racun/{id}")
     public ResponseEntity<?> deleteRacun(@PathVariable Long id) throws Exception {
         Racun racun = service.find(id);
         if (racun == null) {
-            return new ResponseEntity<>("Racun sa ovom sifrom ne postoji", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Ne postoji racun sa id-jem:: " + id, HttpStatus.NOT_FOUND);
         }
         service.deleteRacun(racun);
         return ResponseEntity.ok().body("Racun sa id-jem: " + id + " je uspešno izbrisan.");
     }
+    
 }
