@@ -123,7 +123,7 @@ public class RacunService {
         return saved;
     }
 
-    public void sendRacunViaEmail(Long racunId, MultipartFile uplatnica) throws AddressException, MessagingException, IOException, ResourceNotFoundException {
+    public void sendRacunViaEmail(Long racunId, String emailPassword, MultipartFile uplatnica) throws AddressException, MessagingException, IOException, ResourceNotFoundException {
         Racun r = find(racunId);
         if (r == null) {
             throw new ResourceNotFoundException("Ne postoji racun sa id-jem:: " + racunId);
@@ -142,8 +142,6 @@ public class RacunService {
         
         tekstMejla+= "</tbody></table><br>Ukupno: " + r.getUkupnaVrednost() + "<br>";
         
-
-        //podesi kontakt user-a - dodaj u model
         String mejlVlasnika = r.getVlasnikPosebnogDela().getKontaktVlasnika();
 
         Properties props = new Properties();
@@ -156,11 +154,11 @@ public class RacunService {
         Session session = Session.getInstance(props, new javax.mail.Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication("spring.mejl@gmail.com", "spring68!");
+                return new PasswordAuthentication(r.getUpravnik().getEmail(), emailPassword);
             }
         });
         Message msg = new MimeMessage(session);
-        msg.setFrom(new InternetAddress("spring.mejl@gmail.com", false));
+        msg.setFrom(new InternetAddress(r.getUpravnik().getEmail(), false));
 
         msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(mejlVlasnika));
         msg.setSubject("Racun " + df.format(r.getDatumIzdavanja()));

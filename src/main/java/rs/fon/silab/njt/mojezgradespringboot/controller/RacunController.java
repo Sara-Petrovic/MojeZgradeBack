@@ -155,9 +155,8 @@ public class RacunController {
 
     }
 
-    // promeni ////////////////////////////////////////////////////////////////////////////////////////////////
     @PostMapping(value = "/racun/{id}/send")
-    public String sendRacun(@PathVariable Long id, @ModelAttribute MultipartFile uplatnica)
+    public String sendRacun(@PathVariable Long id, @ModelAttribute MultipartFile uplatnica, @ModelAttribute("emailPassword") String emailPassword)
             throws MessagingException, AddressException, IOException, ResourceNotFoundException, Exception {
 
         Racun racun = service.find(id);
@@ -169,7 +168,7 @@ public class RacunController {
             throw new Exception("Racun je vec placen.");
         }
 
-        service.sendRacunViaEmail(id, uplatnica);
+        service.sendRacunViaEmail(id, emailPassword, uplatnica);
         Racun result = racunIsSent(racun);
 
         //promeni povratnu vrednost
@@ -184,7 +183,6 @@ public class RacunController {
         racun.setStatus(Status.POSLAT);
         return service.save(racun);
     }
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @PutMapping("/racun/paid/{id}")
     public ResponseEntity<?> racunIsPaid(@PathVariable Long id) throws Exception {
