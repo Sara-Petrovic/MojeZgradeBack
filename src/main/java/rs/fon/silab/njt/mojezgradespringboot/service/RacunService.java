@@ -131,8 +131,8 @@ public class RacunService {
         List<StavkaRacuna> stavke = stavkeRacnaRepo.findAllByRacun(r);
         String tekstMejla = 
                 "Racun za " + df.format(r.getDatumIzdavanja())+ "<br>"
-                + "Upravnik: " + r.getUpravnik().getFirstName() + " " + r.getUpravnik().getLastName() + "<br>"
-                + "Vlasnik: " + r.getVlasnikPosebnogDela().getIme() + " " + r.getVlasnikPosebnogDela().getPrezime() + "<br><br><br>" +
+                + "Upravnik/ca: " + r.getUpravnik().getFirstName() + " " + r.getUpravnik().getLastName() + "<br>"
+                + "Vlasnik/ca: " + r.getVlasnikPosebnogDela().getIme() + " " + r.getVlasnikPosebnogDela().getPrezime() + "<br><br><br>" +
                 "<table><thead><th>Redni broj</th> <th>Usluga</th> <th>Cena</th></thead><tbody>";
         
         
