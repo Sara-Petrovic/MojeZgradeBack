@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Uplatnica</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <div id="nalog_za_uplatu" style="border: black 1pt solid; margin:1em; padding:1em; width: 80%;">
+            <div style="text-align: right;">
+                <h3>NALOG ZA UPLATU</h3>
+            </div>
+
+            <div style="display: flex;">
+                <div id="table_left" style="flex: 45%; ">
+                    <label for="uplatilac">Uplatilac:</label><br>
+                    <textarea id="uplatilac" name="uplatilac" rows="3" cols="72" wrap="hard" maxlength="110"
+                              autofocus="">%vlasnik_ime_prezime%
+                        %ulica_broj_mesto%</textarea><br>
+
+                    <label for="svrha">Svrha uplate:</label><br>
+                    <textarea id="svrha" name="svrha" rows="3" cols="72" wrap="hard" maxlength="110">Odrzavanje zgrade - 
+racun za %mesec%</textarea><br>
+
+                    <label for="primalac">Primalac:</label><br>
+                    <textarea cols="72" rows="3" name="primalac" id="primalac" wrap="hard" maxlength="110">Stambena zajednica 
+%ulica_i_broj%</textarea>
+                </div>
+
+                <div id="table_right" style="flex: 40%;">
+
+                    <div style="display:flex">
+                        <div>
+                            <label for="sifra">Šifra plaćanja:</label><br>
+                            <input id="sifra" class="sifra" name="sifra" value="189">
+                        </div>
+
+                        <div style="margin-left: 0.5em;">
+                            <label for="valuta">Valuta:</label><br>
+                            <input class="valuta" type="text" name="valuta" maxlength="3" value="RSD">
+                        </div>
+
+                        <div style="margin-left: 0.5em;">
+                            <label for="iznos">Iznos:</label><br>
+                            <input id="iznos" type="number" name="iznos"
+                                   value="0.00">
+                        </div>
+                    </div>
+
+                    <br>
+                    <label for="racun">Račun:</label><br>
+                    <input type="text" name="racun" maxlength="20" style="width: 100%;"
+                           value="%tekuciRacun%"
+                           placeholder="123-1234567890123-12">
+                    <br><br><br>
+                    <label for="model-i-poziv">Model i poziv na broj:</label>
+                    <div id="model-i-poziv">
+                        <input class="model" type="text" name="model" maxlength="10" style="margin-right: 0.5em;">
+                        <input type="text" name="poziv" maxlength="20" value="%poziv_na_broj%">
+                    </div>
+
+                </div>
+            </div>
+            <div id="table-footer" style="display: flex;  margin-top: 2em;">
+                <div style="margin-right: 10em;">
+                    ______________________________________<br>
+                    <label>Pečat i potpis uplatioca</label>
+                </div>
+                <div style="margin-right: 10em;">
+                    ______________________________________<br>
+                    <label>mesto i datum prijema</label>
+                </div>
+                <div>
+                    ______________________________________<br>
+                    <label>datum valute</label>
+                </div>
+            </div>
+
+        </div>
+    </body>
+</html>

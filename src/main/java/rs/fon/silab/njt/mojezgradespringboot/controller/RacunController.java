@@ -16,14 +16,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 import rs.fon.silab.njt.mojezgradespringboot.dto.RacunDto;
 import rs.fon.silab.njt.mojezgradespringboot.exception.ResourceNotFoundException;
 import rs.fon.silab.njt.mojezgradespringboot.exception.UnauthorizedException;
@@ -155,24 +153,46 @@ public class RacunController {
 
     }
 
+//    @PostMapping(value = "/racun/{id}/send")
+//    public ResponseEntity<?> sendRacun(@PathVariable Long id, @ModelAttribute MultipartFile uplatnica, @ModelAttribute("emailPassword") String emailPassword)
+//            throws MessagingException, AddressException, IOException, ResourceNotFoundException, Exception {
+//
+//        Racun racun = service.find(id);
+//
+//        if (racun == null) {
+//            throw new Exception("Ne postoji racun sa id-jem:: " + id);
+//        }
+//        if (racun.getStatus().equals(Status.PLACEN)) {
+//            throw new Exception("Racun je vec placen.");
+//        }
+//
+//        service.sendRacunViaEmail(id, emailPassword, uplatnica);
+//        Racun result = racunIsSent(racun);
+//
+//        //promeni povratnu vrednost
+//        return ResponseEntity.ok("Success");
+//    }
+    
+    
     @PostMapping(value = "/racun/{id}/send")
-    public String sendRacun(@PathVariable Long id, @ModelAttribute MultipartFile uplatnica, @ModelAttribute("emailPassword") String emailPassword)
+    public ResponseEntity<?> sendRacun(@PathVariable Long id, @RequestBody String emailPassword)
             throws MessagingException, AddressException, IOException, ResourceNotFoundException, Exception {
 
-        Racun racun = service.find(id);
+//        Racun racun = service.find(id);
+//
+//        if (racun == null) {
+//            throw new Exception("Ne postoji racun sa id-jem:: " + id);
+//        }
+//        if (racun.getStatus().equals(Status.PLACEN)) {
+//            throw new Exception("Racun je vec placen.");
+//        }
 
-        if (racun == null) {
-            throw new Exception("Ne postoji racun sa id-jem:: " + id);
-        }
-        if (racun.getStatus().equals(Status.PLACEN)) {
-            throw new Exception("Racun je vec placen.");
-        }
-
-        service.sendRacunViaEmail(id, emailPassword, uplatnica);
+//        service.sendRacunViaEmail(id, emailPassword, uplatnica);
+        Racun racun = service.sendRacunViaEmail(id, emailPassword);
         Racun result = racunIsSent(racun);
 
         //promeni povratnu vrednost
-        return "Success";
+        return ResponseEntity.ok("Success");
     }
 
     private Racun racunIsSent(Racun racun) throws Exception {
@@ -186,8 +206,6 @@ public class RacunController {
 
     @PutMapping("/racun/paid/{id}")
     public ResponseEntity<?> racunIsPaid(@PathVariable Long id) throws Exception {
-      
-        
         Racun racun = service.find(id);
         
         if (racun == null) {
