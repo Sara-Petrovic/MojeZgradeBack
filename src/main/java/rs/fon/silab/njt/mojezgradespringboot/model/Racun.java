@@ -1,6 +1,5 @@
 package rs.fon.silab.njt.mojezgradespringboot.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
@@ -29,22 +28,17 @@ public class Racun implements Serializable{
     @ManyToOne
     @JoinColumn(name = "vlasnikId")
     private VlasnikPosebnogDela vlasnikPosebnogDela;
-    @ManyToOne
-    @JoinColumn(name = "userId")
-    @JsonIgnore
-    private User upravnik;
     
 
     public Racun() {
     }
 
-    public Racun(Long racunId, double ukupnaVrednost, Date datumIzdavanja, Status status, VlasnikPosebnogDela vlasnikPosebnogDela, User upravnik) {
+    public Racun(Long racunId, double ukupnaVrednost, Date datumIzdavanja, Status status, VlasnikPosebnogDela vlasnikPosebnogDela) {
         setRacunId(racunId);
         setUkupnaVrednost(ukupnaVrednost);
         setDatumIzdavanja(datumIzdavanja);
         setStatus(status);
         setVlasnikPosebnogDela(vlasnikPosebnogDela);
-        setUpravnik(upravnik);
     }
 
     public VlasnikPosebnogDela getVlasnikPosebnogDela() {
@@ -93,14 +87,6 @@ public class Racun implements Serializable{
         this.status = status;
     }
 
-    public User getUpravnik() {
-        return upravnik;
-    }
-
-    public void setUpravnik(User upravnik) {
-        this.upravnik = upravnik;
-    }
-
     @Override
     public int hashCode() {
         int hash = 7;
@@ -109,7 +95,6 @@ public class Racun implements Serializable{
         hash = 59 * hash + Objects.hashCode(this.datumIzdavanja);
         hash = 59 * hash + Objects.hashCode(this.status);
         hash = 59 * hash + Objects.hashCode(this.vlasnikPosebnogDela);
-        hash = 59 * hash + Objects.hashCode(this.upravnik);
         return hash;
     }
 
@@ -131,15 +116,12 @@ public class Racun implements Serializable{
         if (!Objects.equals(this.vlasnikPosebnogDela, other.vlasnikPosebnogDela)) {
             return false;
         }
-        if (!Objects.equals(this.upravnik, other.upravnik)) {
-            return false;
-        }
         return true;
     }
 
     @Override
     public String toString() {
-        return "Racun{" + "racunId=" + racunId + ", ukupnaVrednost=" + ukupnaVrednost + ", datumIzdavanja=" + datumIzdavanja + ", status=" + status + ", vlasnikPosebnogDela=" + vlasnikPosebnogDela + ", upravnik=" + upravnik + '}';
+        return "Racun{" + "racunId=" + racunId + ", ukupnaVrednost=" + ukupnaVrednost + ", datumIzdavanja=" + datumIzdavanja + ", status=" + status + ", vlasnikPosebnogDela=" + vlasnikPosebnogDela + '}';
     }
     
 }

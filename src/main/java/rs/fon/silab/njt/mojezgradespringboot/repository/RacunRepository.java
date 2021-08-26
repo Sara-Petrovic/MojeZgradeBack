@@ -9,10 +9,11 @@ import rs.fon.silab.njt.mojezgradespringboot.model.VlasnikPosebnogDela;
 
 public interface RacunRepository extends JpaRepository<Racun, Long>{
 
-    public List<Racun> findByStatusAndUpravnik(Status status, User upravnik);
+    public List<Racun> findByStatusAndVlasnikPosebnogDela_StambenaZajednica_Upravnik(Status status, User upravnik);
+        
+    public List<Racun> findAllByVlasnikPosebnogDela_StambenaZajednica_Upravnik(User upravnik);
     
-    public List<Racun> findByVlasnikPosebnogDelaAndUpravnik(VlasnikPosebnogDela vlasnik, User upravnik);
+    public List<Racun> findByVlasnikPosebnogDelaAndVlasnikPosebnogDela_StambenaZajednica_Upravnik(VlasnikPosebnogDela vlasnik, User upravnik);
     
-    public List<Racun> findAllByUpravnik(User upravnik);
     
 }

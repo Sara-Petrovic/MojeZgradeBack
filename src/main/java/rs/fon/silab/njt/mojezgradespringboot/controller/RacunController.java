@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import rs.fon.silab.njt.mojezgradespringboot.dto.EmailRacun;
 import rs.fon.silab.njt.mojezgradespringboot.dto.RacunDto;
 import rs.fon.silab.njt.mojezgradespringboot.exception.ResourceNotFoundException;
 import rs.fon.silab.njt.mojezgradespringboot.exception.UnauthorizedException;
@@ -49,7 +52,7 @@ public class RacunController {
         }
         //postavljam status racuna na kreiran
         Racun newRacun = new Racun(1l,
-                0, r.getDatumIzdavanja(), Status.KREIRAN, optVlasnik.get(), r.getUpravnik());
+                0, r.getDatumIzdavanja(), Status.KREIRAN, optVlasnik.get());
         List<StavkaRacuna> stavke = r.getStavke();
         double ukupnaVrednost = 0;
         for (int i = 0; i < stavke.size(); i++) {
@@ -59,7 +62,7 @@ public class RacunController {
         newRacun.setUkupnaVrednost(ukupnaVrednost);
         newRacun = service.save(newRacun, stavke);
         RacunDto returnValue = new RacunDto(newRacun.getRacunId(), newRacun.getUkupnaVrednost(),
-                newRacun.getDatumIzdavanja(), newRacun.getStatus(), newRacun.getVlasnikPosebnogDela(), newRacun.getUpravnik(), stavke);
+                newRacun.getDatumIzdavanja(), newRacun.getStatus(), newRacun.getVlasnikPosebnogDela(), stavke);
         return ResponseEntity.ok().body(returnValue);
     }
 
@@ -90,7 +93,7 @@ public class RacunController {
         List<StavkaRacuna> stavke = service.getStavkeRacuna(r);
         return ResponseEntity.ok().body(new RacunDto(r.getRacunId(),
                 r.getUkupnaVrednost(), r.getDatumIzdavanja(),
-                r.getStatus(), r.getVlasnikPosebnogDela(), r.getUpravnik(), stavke));
+                r.getStatus(), r.getVlasnikPosebnogDela(), stavke));
     }
 
     @GetMapping("/racun/user/{userId}/{loginToken}/searchbystatus")
@@ -144,55 +147,31 @@ public class RacunController {
         }
 
         //ne menjam upravnika i id - ostalo azuriram
-        Racun updatedRacun = service.update(new Racun(racunPreUpdejta.getRacunId(), ukupnaVrednost, racun.getDatumIzdavanja(), racun.getStatus(), racun.getVlasnikPosebnogDela(), racunPreUpdejta.getUpravnik()),
+        Racun updatedRacun = service.update(new Racun(racunPreUpdejta.getRacunId(), ukupnaVrednost, racun.getDatumIzdavanja(), racun.getStatus(), racun.getVlasnikPosebnogDela()),
                 racun.getStavke());
 
         return ResponseEntity.ok().body(new RacunDto(updatedRacun.getRacunId(),
                 updatedRacun.getUkupnaVrednost(), updatedRacun.getDatumIzdavanja(),
-                updatedRacun.getStatus(), updatedRacun.getVlasnikPosebnogDela(), updatedRacun.getUpravnik(), racun.getStavke()));
+                updatedRacun.getStatus(), updatedRacun.getVlasnikPosebnogDela(), racun.getStavke()));
 
     }
 
-//    @PostMapping(value = "/racun/{id}/send")
-//    public ResponseEntity<?> sendRacun(@PathVariable Long id, @ModelAttribute MultipartFile uplatnica, @ModelAttribute("emailPassword") String emailPassword)
-//            throws MessagingException, AddressException, IOException, ResourceNotFoundException, Exception {
-//
-//        Racun racun = service.find(id);
-//
-//        if (racun == null) {
-//            throw new Exception("Ne postoji racun sa id-jem:: " + id);
-//        }
-//        if (racun.getStatus().equals(Status.PLACEN)) {
-//            throw new Exception("Racun je vec placen.");
-//        }
-//
-//        service.sendRacunViaEmail(id, emailPassword, uplatnica);
-//        Racun result = racunIsSent(racun);
-//
-//        //promeni povratnu vrednost
-//        return ResponseEntity.ok("Success");
-//    }
-    
-    
     @PostMapping(value = "/racun/{id}/send")
-    public ResponseEntity<?> sendRacun(@PathVariable Long id, @RequestBody String emailPassword)
-            throws MessagingException, AddressException, IOException, ResourceNotFoundException, Exception {
-
-//        Racun racun = service.find(id);
-//
-//        if (racun == null) {
-//            throw new Exception("Ne postoji racun sa id-jem:: " + id);
-//        }
-//        if (racun.getStatus().equals(Status.PLACEN)) {
-//            throw new Exception("Racun je vec placen.");
-//        }
-
-//        service.sendRacunViaEmail(id, emailPassword, uplatnica);
-        Racun racun = service.sendRacunViaEmail(id, emailPassword);
-        Racun result = racunIsSent(racun);
-
-        //promeni povratnu vrednost
-        return ResponseEntity.ok("Success");
+    public Map<String, String> sendRacun(@PathVariable Long id, @RequestBody EmailRacun emailRacun) {
+        Map<String, String> response = new HashMap<>();
+        
+        Racun racun = emailRacun.getRacun();
+        String emailPassword = emailRacun.getEmailPassword();
+        
+        try {
+            service.sendRacunViaEmail(id, racun, emailPassword);
+            Racun result = racunIsSent(racun);
+        } catch (Exception e) {
+            response.put("error", e.getMessage());
+            return response;
+        }
+        response.put("sent", "Success");
+        return response;
     }
 
     private Racun racunIsSent(Racun racun) throws Exception {
@@ -207,7 +186,7 @@ public class RacunController {
     @PutMapping("/racun/paid/{id}")
     public ResponseEntity<?> racunIsPaid(@PathVariable Long id) throws Exception {
         Racun racun = service.find(id);
-        
+
         if (racun == null) {
             return new ResponseEntity<>("Ne postoji racun sa id-jem:: " + id, HttpStatus.NOT_FOUND);
         }
@@ -225,5 +204,5 @@ public class RacunController {
         service.deleteRacun(racun);
         return ResponseEntity.ok().body("Racun sa id-jem: " + id + " je uspešno izbrisan.");
     }
-    
+
 }

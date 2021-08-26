@@ -9,15 +9,14 @@ import rs.fon.silab.njt.mojezgradespringboot.model.Mesto;
 import rs.fon.silab.njt.mojezgradespringboot.service.MestoService;
 
 @RestController
+@CrossOrigin(origins = "*")
 public class MestoController {
 
     @Autowired
     private MestoService service;
 
     @GetMapping("/mesto")
-    @CrossOrigin(origins = "http://localhost:4200")
-    public List<Mesto> getMesta() {
+    public List<Mesto> getAllMesta() {
         return service.getMesta();
     }
-
 }
