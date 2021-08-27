@@ -27,6 +27,7 @@ import javax.mail.internet.MimeMultipart;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import rs.fon.silab.njt.mojezgradespringboot.dto.EmailRacun;
 import rs.fon.silab.njt.mojezgradespringboot.exception.ResourceNotFoundException;
 import rs.fon.silab.njt.mojezgradespringboot.exception.UnauthorizedException;
 import rs.fon.silab.njt.mojezgradespringboot.model.Racun;
@@ -48,7 +49,7 @@ public class RacunService {
     @Autowired
     private RegistrationService userService;
 
-    private final SimpleDateFormat df = new SimpleDateFormat("MMMMM-yyyy");
+    private final SimpleDateFormat df = new SimpleDateFormat("dd-MMMMM-yyyy");
  
     public Racun save(Racun r, List<StavkaRacuna> stavke) {
         Racun saved = repo.save(r);
@@ -127,7 +128,13 @@ public class RacunService {
         return saved;
     }
 
-    public Racun sendRacunViaEmail(Long racunId, Racun r, String emailPassword) throws AddressException, MessagingException, IOException, ResourceNotFoundException, DocumentException {
+    //Racun r, String emailPassword
+    
+    public Racun sendRacunViaEmail(Long racunId, EmailRacun emailRacun) throws AddressException, MessagingException, IOException, ResourceNotFoundException, DocumentException {
+        Racun r = emailRacun.getRacun();
+        String emailPassword = emailRacun.getEmailPassword();
+        
+        
         List<StavkaRacuna> stavke = stavkeRacnaRepo.findAllByRacun(r);
 
         String tekstMejla
@@ -142,41 +149,49 @@ public class RacunService {
 
         tekstMejla += "</tbody></table><br>Ukupno: " + r.getUkupnaVrednost() + "<br>";
         
-        String uplatnica_popunjena = "";
+        String uplatnica = "";
         String uplatnicaFilePath = "src\\main\\resources\\uplatnica.html";
         
         try (BufferedReader reader = new BufferedReader(new FileReader(uplatnicaFilePath))) {
             String line = reader.readLine();
             while(line!=null){
-                uplatnica_popunjena += line;
+                uplatnica += line;
                 line = reader.readLine();
             }
         }
-              
+        
+        //platilac
+        uplatnica = uplatnica.replace("%vlasnik_ime_prezime%", r.getVlasnikPosebnogDela().getIme() + " " + r.getVlasnikPosebnogDela().getPrezime());
 
-        uplatnica_popunjena = uplatnica_popunjena.replace("%ulica_broj_mesto%",
+        uplatnica = uplatnica.replace("%ulica_broj_mesto%",
                 "" + r.getVlasnikPosebnogDela().getStambenaZajednica().getUlica()
                 + " " + r.getVlasnikPosebnogDela().getStambenaZajednica().getBroj()
                 + " " + r.getVlasnikPosebnogDela().getStambenaZajednica().getMesto().getNaziv());
 
-        uplatnica_popunjena = uplatnica_popunjena.replace("%mesec%", new SimpleDateFormat("MMMMM").format(r.getDatumIzdavanja()));
+        //svrha uplate
+        uplatnica = uplatnica.replace("%mesec%", new SimpleDateFormat("MMMMM").format(r.getDatumIzdavanja()));
 
-        uplatnica_popunjena = uplatnica_popunjena.replace("0.00", String.valueOf(r.getUkupnaVrednost()));
+        //prvi red (sifra placanja, valuta, iznos)
+        uplatnica = uplatnica.replace("%sifra-placanja%", emailRacun.getSifraPlacanja());
+        uplatnica = uplatnica.replace("%valuta%", emailRacun.getValuta());
+        uplatnica = uplatnica.replace("0.00", emailRacun.getIznos());
 
-        uplatnica_popunjena = uplatnica_popunjena.replace("%tekuciRacun%", r.getVlasnikPosebnogDela().getStambenaZajednica().getTekuciRacun());
+        //drugi red - tekuci racun
+        uplatnica = uplatnica.replace("%tekuciRacun%", emailRacun.getTekuciRacun());
 
-        uplatnica_popunjena = uplatnica_popunjena.replace("%poziv_na_broj%", r.getVlasnikPosebnogDela().getBrojPosebnogDela());
+        //treci red - model i poziv na broj
+        uplatnica = uplatnica.replace("%model%", emailRacun.getModel());
+        uplatnica = uplatnica.replace("%poziv_na_broj%", emailRacun.getPozivNaBroj());
 
-        uplatnica_popunjena = uplatnica_popunjena.replace("%vlasnik_ime_prezime%", r.getVlasnikPosebnogDela().getIme() + " " + r.getVlasnikPosebnogDela().getPrezime());
-
-        uplatnica_popunjena = uplatnica_popunjena.replace("%ulica_i_broj%", r.getVlasnikPosebnogDela().getStambenaZajednica().getUlica() + " "
+        
+        uplatnica = uplatnica.replace("%ulica_i_broj%", r.getVlasnikPosebnogDela().getStambenaZajednica().getUlica() + " "
                 + r.getVlasnikPosebnogDela().getStambenaZajednica().getBroj());
         
         ConverterProperties cp = new ConverterProperties();
         cp.setCharset("UTF-8");
         
 
-        HtmlConverter.convertToPdf(uplatnica_popunjena, new FileOutputStream("generated_documents/upaltnica_" + df.format(r.getDatumIzdavanja()) + ".pdf"), cp);
+        HtmlConverter.convertToPdf(uplatnica, new FileOutputStream("generated_documents/upaltnica_" + df.format(r.getDatumIzdavanja()) + ".pdf"), cp);
 
         String mejlVlasnika = r.getVlasnikPosebnogDela().getKontaktVlasnika();
 

@@ -1,85 +1,73 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
-    <head>
-        <title>Uplatnica</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        *{
-            font-family: Arial
-        }
-    </style>
-    </head>
-    <body style="width: 21cm; height: 29.7cm;">
-        <div id="nalog_za_uplatu" style="border: black 1pt solid; width:100%; padding:0.5cm;">
-            <div style="text-align: right;">
-                <h3>NALOG ZA UPLATU</h3>
-            </div>
-
-            <div style="display: flex;">
-                <div id="table_left" style="width: 8cm;">
-                    <label for="uplatilac">Uplatilac:</label><br>
-                    <textarea id="uplatilac" name="uplatilac" rows="3" cols="72" wrap="hard" maxlength="110"
-                              autofocus="">%vlasnik_ime_prezime%
-                        %ulica_broj_mesto%</textarea><br>
-
-                    <label for="svrha">Svrha uplate:</label><br>
-                    <textarea id="svrha" name="svrha" rows="3" cols="72" wrap="hard" maxlength="110">Odrzavanje zgrade - 
-racun za %mesec%</textarea><br>
-
-                    <label for="primalac">Primalac:</label><br>
-                    <textarea cols="72" rows="3" name="primalac" id="primalac" wrap="hard" maxlength="110">Stambena zajednica 
-%ulica_i_broj%</textarea>
-                </div>
-
-                <div id="table_right" style="width: 10cm;">
-
-                    <div style="display:flex">
-                        <div>
-                            <label for="sifra">Šifra plaćanja:</label><br>
-                            <input id="sifra" name="sifra" value="189">
-                        </div>
-
-                        <div style="margin-left: 0.5em;">
-                            <label>Valuta:</label><br>
-                            <input type="text" name="valuta" maxlength="3" value="RSD">
-                        </div>
-
-                        <div style="margin-left: 0.5em;">
-                            <label for="iznos">Iznos:</label><br>
-                            <input id="iznos" type="number" name="iznos"
-                                   value="0.00">
-                        </div>
-                    </div>
-
-                    <br>
-                    <label>Račun:</label><br>
-                    <input type="text" name="racun" maxlength="20" style="width: 100%;"
-                           value="%tekuciRacun%">
-                    <br><br><br>
-                    <label>Model i poziv na broj:</label>
-                    <div id="model-i-poziv">
-                        <input type="text" name="model" maxlength="10" style="margin-right: 0.5em;">
-                        <input type="text" name="poziv" maxlength="20" value="%poziv_na_broj%">
-                    </div>
-
-                </div>
-            </div>
-            <div id="table-footer" style="display: flex;  margin-top: 2em; width: 80%">
-                <div style="margin-right: 10em;">
-                    ______________________________________<br>
-                    <label>Pečat i potpis uplatioca</label>
-                </div>
-                <div style="margin-right: 10em;">
-                    ______________________________________<br>
-                    <label>mesto i datum prijema</label>
-                </div>
-                <div>
-                    ______________________________________<br>
-                    <label>datum valute</label>
-                </div>
-            </div>
-
+<head>
+    <title> </title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="width: 21cm; height: 29.7cm;">
+    <div id="nalog_za_uplatu" style="border: black 1pt solid; width:100%; padding:0.5cm; height:9.5cm; padding-top:2pt">
+        <div style="text-align: right;">
+            <h3 style="margin: 0; font-family:sans-serif; font-size:12pt">NALOG ZA UPLATU</h3>
         </div>
-    </body>
+        <div style="display: flex;">
+            <div id="table_left" style="width: 8cm;">
+                <label for="platilac" style="font-family:sans-serif; font-size:9pt">platilac:</label><br>
+                <textarea id="platilac" name="uplatilac" rows="3" cols="72" wrap="hard" maxlength="110"
+                          style="width:9cm; height:1.5cm; font-family:sans-serif; border: black 0.5pt solid">%vlasnik_ime_prezime%
+ %ulica_broj_mesto%</textarea><br>
+                <label for="svrha" style="font-family:sans-serif; font-size:9pt">svrha uplate:</label><br>
+                <textarea id="svrha" name="svrha" rows="3" cols="72" wrap="hard" maxlength="110"
+                          style="width:9cm; height:1.5cm; font-family:sans-serif; border: black 0.5pt solid">Odrzavanje zgrade - 
+racun za %mesec%</textarea><br>
+                <label for="primalac" style="font-family:sans-serif; font-size:9pt">primalac:</label><br>
+                <textarea cols="72" rows="3" name="primalac" id="primalac" wrap="hard" maxlength="110"
+                          style="width:9cm; height:1.5cm; font-family:sans-serif; border: black 0.5pt solid">Stambena zajednica 
+ %ulica_i_broj%</textarea>
+            </div>
+            <div style="border-left:1pt black solid; position:absolute; left:10.6cm; height:6.1cm; top:1.3cm"></div>
+            <div id="table_right" style="width: 9.6cm; position: absolute; left:11.3cm; top:1.2cm">
+                <div style="display:flex">
+                    <div>
+                        <label for="sifra" style="font-family:sans-serif; font-size:9pt;">sifra placanja:</label><br>
+                        <input id="sifra" name="sifra" value="%sifra-placanja%" style="width:1.2cm; height:0.6cm; font-family:sans-serif; border: black 0.5pt solid">
+                    </div>
+                    <div style="margin-left: 0.5cm;">
+                        <label style="font-family:sans-serif; font-size:9pt">valuta:</label><br>
+                        <input type="text" name="valuta" maxlength="3" value="%valuta%" style="width: 1.3cm; height:0.6cm; font-family:sans-serif; border: black 0.5pt solid">
+                    </div>
+                    <div style="margin-left: 0.7cm;">
+                        <label for="iznos" style="font-family:sans-serif; font-size:9pt">iznos:</label><br>
+                        <input id="iznos" type="number" name="iznos" style="width: 3.3cm; height:0.6cm; font-family:sans-serif; border: black 0.5pt solid"
+                               value="0.00">
+                    </div>
+                </div>
+                <br>
+                <label style="font-family:sans-serif; font-size:9pt">racun:</label><br>
+                <input type="text" name="racun" maxlength="20" style="width: 7.6cm; height:0.6cm; text-align:center; font-family:sans-serif; border: black 0.5pt solid"
+                       value="%tekuciRacun%">
+                <br><br><br>
+                <label style="font-family:sans-serif; font-size:9pt">model i poziv na broj:</label>
+                <div id="model-i-poziv">
+                    <input type="text" name="model" maxlength="10" value="%model%" style="margin-right: 0.5cm; width:1cm; height:0.6cm; font-family:sans-serif; border: black 0.5pt solid">
+                    <input type="text" name="poziv" maxlength="20" value="%poziv_na_broj%" style="width:6cm; height:0.6cm; font-family:sans-serif; border: black 0.5pt solid">
+                </div>
+            </div>
+        </div>
+        <div id="table-footer" style="display: flex;  margin-top: 2em; width: 17cm">
+            <div style="margin-right: 1em;">
+                ___________________________<br>
+                <label style="font-family:sans-serif; font-size:9pt">pecat i potpis uplatioca</label>
+            </div>
+            <div style="margin-right: 1em;">
+                __________________<br>
+                <label style="font-family:sans-serif; font-size:9pt">mesto i datum prijema</label>
+            </div>
+            <div>
+                __________________<br>
+                <label style="font-family:sans-serif; font-size:9pt">datum valute</label>
+            </div>
+        </div>
+    </div>
+</body>
 </html>

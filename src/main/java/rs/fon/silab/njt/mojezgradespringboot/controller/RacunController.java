@@ -1,5 +1,6 @@
 package rs.fon.silab.njt.mojezgradespringboot.controller;
 
+import com.itextpdf.text.DocumentException;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -157,19 +158,13 @@ public class RacunController {
     }
 
     @PostMapping(value = "/racun/{id}/send")
-    public Map<String, String> sendRacun(@PathVariable Long id, @RequestBody EmailRacun emailRacun) {
+    public Map<String, String> sendRacun(@PathVariable Long id, @RequestBody EmailRacun emailRacun) 
+            throws Exception {
         Map<String, String> response = new HashMap<>();
-        
-        Racun racun = emailRacun.getRacun();
-        String emailPassword = emailRacun.getEmailPassword();
-        
-        try {
-            service.sendRacunViaEmail(id, racun, emailPassword);
-            Racun result = racunIsSent(racun);
-        } catch (Exception e) {
-            response.put("error", e.getMessage());
-            return response;
-        }
+
+        service.sendRacunViaEmail(id, emailRacun);
+        Racun result = racunIsSent(emailRacun.getRacun());
+
         response.put("sent", "Success");
         return response;
     }
