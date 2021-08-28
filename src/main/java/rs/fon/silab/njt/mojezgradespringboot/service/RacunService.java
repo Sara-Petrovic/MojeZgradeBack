@@ -190,8 +190,11 @@ public class RacunService {
         ConverterProperties cp = new ConverterProperties();
         cp.setCharset("UTF-8");
         
+        String fileName =  "generated_documents/uplatnice/" + 
+                        r.getVlasnikPosebnogDela().getIme() + "_" + r.getVlasnikPosebnogDela().getPrezime() + "_" + r.getVlasnikPosebnogDela().getBrojPosebnogDela() + 
+                                "/" + df.format(r.getDatumIzdavanja()) + ".pdf";
 
-        HtmlConverter.convertToPdf(uplatnica, new FileOutputStream("generated_documents/upaltnica_" + df.format(r.getDatumIzdavanja()) + ".pdf"), cp);
+        HtmlConverter.convertToPdf(uplatnica, new FileOutputStream(new File(fileName)), cp);
 
         String mejlVlasnika = r.getVlasnikPosebnogDela().getKontaktVlasnika();
 
@@ -224,7 +227,7 @@ public class RacunService {
         multipart.addBodyPart(messageBodyPart);
         MimeBodyPart attachPart = new MimeBodyPart();
 
-        attachPart.attachFile(new File("generated_documents/upaltnica_" + df.format(r.getDatumIzdavanja()) + ".pdf"));
+        attachPart.attachFile(new File(fileName));
         multipart.addBodyPart(attachPart);
         msg.setContent(multipart);
         Transport.send(msg);
