@@ -4,18 +4,28 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 @Entity
 public class StavkaRacuna implements Serializable {
 
     @EmbeddedId
     private StavkaRacunKey stavkaRacunaId;
+    @NotNull
+    @Min(value = 0)
+    @Column(name = "cena", columnDefinition = "double default 0")
     private double cena;
+    @NotNull
+    @Min(value = 0)
+    @Column(name = "kolicina", columnDefinition = "integer default 0")
     private double kolicina;
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "uslugaId")
     private Usluga usluga;

@@ -4,12 +4,14 @@ import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.validation.constraints.NotNull;
 
 @Entity
 public class Mesto implements Serializable {
 
     @Id
     private Long mestoId;
+    @NotNull
     private String ptt;
     private String naziv;
 

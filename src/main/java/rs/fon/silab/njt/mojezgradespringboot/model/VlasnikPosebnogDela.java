@@ -10,37 +10,34 @@ import javax.persistence.Enumerated;
 
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.validation.constraints.NotNull;
 
 @Entity
 public class VlasnikPosebnogDela implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
     private Long vlasnikId;
     //@Size(min=3, message="Ime mora imati najmanje 3 karaktera.")
     private String ime;
 
     //@Size(min=3, message="Prezime mora imati najmanje 3 karaktera.")
     private String prezime;
-
+    @NotNull
     private String brojPosebnogDela;
 
     private double velicinaPosebnogDela;
 
     @Enumerated(EnumType.STRING)
     private JedinicaMere mernaJedinica;
-
+    @NotNull
     private String kontaktVlasnika;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "stambenaZajednicaId")
     private StambenaZajednica stambenaZajednica;

@@ -5,24 +5,28 @@ import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
 
 @Entity
 public class StambenaZajednica implements Serializable {
 
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue
     private Long stambenaZajednicaId;
+    @NotNull
     private String ulica;
+    @NotNull
     private String broj;
     @ManyToOne
     @JoinColumn(name = "mestoId")
     private Mesto mesto;
+    @NotNull
     private String tekuciRacun;
     private String banka;
+    @NotNull
     private String pib;
     private String maticniBroj;
     @ManyToOne

@@ -1,7 +1,5 @@
 package rs.fon.silab.njt.mojezgradespringboot.controller;
 
-import com.itextpdf.text.DocumentException;
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,8 +9,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import javax.mail.MessagingException;
-import javax.mail.internet.AddressException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import rs.fon.silab.njt.mojezgradespringboot.dto.EmailRacun;
 import rs.fon.silab.njt.mojezgradespringboot.dto.RacunDto;
-import rs.fon.silab.njt.mojezgradespringboot.exception.ResourceNotFoundException;
 import rs.fon.silab.njt.mojezgradespringboot.exception.UnauthorizedException;
 import rs.fon.silab.njt.mojezgradespringboot.model.Racun;
 import rs.fon.silab.njt.mojezgradespringboot.model.Status;

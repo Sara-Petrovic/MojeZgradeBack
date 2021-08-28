@@ -13,18 +13,24 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 @Entity
 public class Racun implements Serializable{
     @Id
     @GeneratedValue
     private Long racunId;
+    @NotNull
+    @Min(value = 0)
     private double ukupnaVrednost;
+    @NotNull
     @Basic
     @Temporal(TemporalType.DATE)
     private Date datumIzdavanja;
     @Enumerated(EnumType.STRING)
     private Status status;
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "vlasnikId")
     private VlasnikPosebnogDela vlasnikPosebnogDela;

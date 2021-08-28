@@ -7,6 +7,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.validation.constraints.NotNull;
 
 @Entity
 public class Usluga implements Serializable{
@@ -14,6 +15,7 @@ public class Usluga implements Serializable{
     @GeneratedValue
     private Long uslugaId;
     private String naziv;
+    @NotNull    
     private double cena;
     @Enumerated(EnumType.STRING)
     private JedinicaMere jedinicaMere;
